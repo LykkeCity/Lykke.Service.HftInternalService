@@ -41,6 +41,7 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
     <PackageReference Include="Swashbuckle.SwaggerGen" Version="6.0.0-beta902" />
     <PackageReference Include="Swashbuckle.SwaggerUi" Version="6.0.0-beta902" />
@@ -54,6 +55,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Lykke.Service.HftInternalService.AzureRepositories\Lykke.Service.HftInternalService.AzureRepositories.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.Core\Lykke.Service.HftInternalService.Core.csproj" />
+    <ProjectReference Include="..\Lykke.Service.HftInternalService.MongoRepositories\Lykke.Service.HFT.MongoRepositories.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.Services\Lykke.Service.HftInternalService.Services.csproj" />
   </ItemGroup>
 

@@ -53,7 +53,8 @@ namespace Lykke.Service.HftInternalService
             var appSettings = Configuration.LoadSettings<AppSettings>();
             Log = CreateLogWithSlack(services, appSettings);
 
-            builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.HftInternalServiceService), Log));
+            //builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.HftInternalService), Log));
+            builder.RegisterModule(new ServiceModule(appSettings, Log));
             builder.Populate(services);
             ApplicationContainer = builder.Build();
 
@@ -133,7 +134,7 @@ namespace Lykke.Service.HftInternalService
                 QueueName = settings.CurrentValue.SlackNotifications.AzureQueue.QueueName
             }, aggregateLogger);
 
-            var dbLogConnectionStringManager = settings.Nested(x => x.HftInternalServiceService.Db.LogsConnString);
+            var dbLogConnectionStringManager = settings.Nested(x => x.HftInternalService.Db.LogsConnString);
             var dbLogConnectionString = dbLogConnectionStringManager.CurrentValue;
 
             // Creating azure storage logger, which logs own messages to concole log
