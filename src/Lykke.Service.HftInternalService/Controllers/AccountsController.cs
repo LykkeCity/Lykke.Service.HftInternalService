@@ -5,7 +5,6 @@ using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lykke.Service.HftInternalService.Controllers
@@ -16,9 +15,11 @@ namespace Lykke.Service.HftInternalService.Controllers
     {
         private readonly HighFrequencyTradingSettings _settings;
         private readonly IAccountService _accountService;
+        private readonly IApiKeyService _apiKeyService;
 
-        public AccountsController(HighFrequencyTradingSettings settings, IAccountService accountService)
+        public AccountsController(HighFrequencyTradingSettings settings, IAccountService accountService, IApiKeyService apiKeyService)
         {
+            _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
@@ -28,22 +29,12 @@ namespace Lykke.Service.HftInternalService.Controllers
         /// </summary>
         /// <param name="request">Account creation settings.</param>
         /// <returns>Trusted account ID and API key.</returns>
-        /// <remarks>Please use service-defined access token as 'api-key'.</remarks>
         [HttpPost]
         [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest request)
         {
-            // todo: use request headers for auth
-            //var userId = User.GetUserId();
-            var userId = request.AdminApiKey;
-            if (userId != _settings.ApiKey)
-            {
-                //return Forbid();
-                return Unauthorized();
-            }
-
             var account = await _accountService.CreateAccount(request.ClientId);
             return Ok(account);
         }
@@ -53,46 +44,28 @@ namespace Lykke.Service.HftInternalService.Controllers
         /// </summary>
         /// <param name="id">Client ID</param>
         /// <returns>Trusted account DTO.</returns>
-        /// <remarks>Please use service-defined access token as 'api-key'.</remarks>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> GetAccount(string id)
         {
-            // todo: check admin api key
-            // todo: use request headers for auth
-            //var userId = User.GetUserId();
-            //if (userId != _settings.ApiKey)
-            //{
-            //    return Forbid();
-            //}
-
             var account = await _accountService.GetAccount(id);
             return Ok(account);
         }
 
         /// <summary>
-        /// Delete HFT account.
+        /// Get all api keys for a specified account.
         /// </summary>
-        /// <param name="id">Client ID</param>
-        /// <remarks>Please use service-defined access token as 'api-key'.</remarks>
-        [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        /// <param name="accountId"></param>
+        [HttpGet("{accountId}/keys")]
+        [ProducesResponseType(typeof(ApiKey[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<IActionResult> DeleteAccount(string id)
+        public async Task<IActionResult> GetKeys(string accountId)
         {
-            // todo: check admin api key
-            // todo: use request headers for auth
-            //var userId = User.GetUserId();
-            //if (userId != _settings.ApiKey)
-            //{
-            //    return Forbid();
-            //}
-
-            var account = await _accountService.GetAccount(id);
-            return Ok(new AccountDto { ApiKey = account.ApiKey, Id = account.Id });
+            var keys = await _apiKeyService.GetApiKeysAsync(accountId);
+            return Ok(keys);
         }
         
         /// <summary>

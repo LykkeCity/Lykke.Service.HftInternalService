@@ -19,13 +19,13 @@ namespace Lykke.Service.HftInternalService.Services
         public async Task<Account> CreateAccount(string clientId)
         {
             var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId);
-            return new Account { ApiKey = apiKey, Id = Guid.Empty, ClientId = clientId };
+            return new Account { ApiKeys = new[] { apiKey }, Id = Guid.Empty, ClientId = clientId };
         }
 
         public async Task<Account> GetAccount(string accountId)
         {
-            var apiKey = await _apiKeyService.GetApiKeyAsync(accountId);
-            return new Account { ApiKey = apiKey, Id = Guid.Empty, ClientId = accountId };
+            var apiKeys = await _apiKeyService.GetApiKeysAsync(accountId);
+            return new Account { ApiKeys = apiKeys, Id = Guid.Empty, ClientId = accountId };
         }
 
         public async Task<string> CashInOut(string accountId, string assetId, double amount)
