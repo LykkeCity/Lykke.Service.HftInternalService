@@ -2,7 +2,7 @@
 
 namespace Lykke.Service.HftInternalService.Core.Domain
 {
-    public class TrustedAccount : IHasId
+    public class Account : IHasId
     {
         public Guid Id { get; set; }
         public string ClientId { get; set; }

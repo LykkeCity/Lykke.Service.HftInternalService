@@ -83,12 +83,12 @@ namespace Lykke.Service.HftInternalService.Modules
 
         private void RegisterApiKeyService(ContainerBuilder builder)
         {
-            builder.RegisterType<ApiKeyGenerator>()
+            builder.RegisterType<ApiKeyService>()
                 .WithParameter(
                     new ResolvedParameter(
                         (pi, ctx) => pi.ParameterType == typeof(IDistributedCache),
                         (pi, ctx) => ctx.ResolveKeyed<IDistributedCache>("apiKeys")))
-                .As<IApiKeyGenerator>()
+                .As<IApiKeyService>()
                 .SingleInstance();
 
 
@@ -96,8 +96,8 @@ namespace Lykke.Service.HftInternalService.Modules
                 .As<IRepository<ApiKey>>()
                 .SingleInstance();
 
-            builder.RegisterType<TrustedAccountService>()
-                .As<ITrustedAccountService>()
+            builder.RegisterType<AccountService>()
+                .As<IAccountService>()
                 .SingleInstance();
         }
 

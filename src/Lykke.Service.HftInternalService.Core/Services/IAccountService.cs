@@ -3,11 +3,10 @@ using Lykke.Service.HftInternalService.Core.Domain;
 
 namespace Lykke.Service.HftInternalService.Core.Services
 {
-    public interface ITrustedAccountService
+    public interface IAccountService
     {
-        Task<TrustedAccount> CreateAccount(string clientId);
-        Task<TrustedAccount> GetAccount(string accountId);
-        Task GetBalances(string accountId);
+        Task<Account> CreateAccount(string clientId);
+        Task<Account> GetAccount(string accountId);
         Task<string> CashInOut(string accountId, string assetId, double amount);
     }
 }

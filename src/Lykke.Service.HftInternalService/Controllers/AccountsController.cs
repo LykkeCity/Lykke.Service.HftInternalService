@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using Lykke.Service.HftInternalService.Core;
+using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -14,22 +15,22 @@ namespace Lykke.Service.HftInternalService.Controllers
     public class AccountsController : Controller
     {
         private readonly HighFrequencyTradingSettings _settings;
-        private readonly ITrustedAccountService _trustedAccountService;
+        private readonly IAccountService _accountService;
 
-        public AccountsController(HighFrequencyTradingSettings settings, ITrustedAccountService trustedAccountService)
+        public AccountsController(HighFrequencyTradingSettings settings, IAccountService accountService)
         {
-            _trustedAccountService = trustedAccountService ?? throw new ArgumentNullException(nameof(trustedAccountService));
+            _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         /// <summary>
-        /// Create trusted account for specified client.
+        /// Create HFT account for specified client.
         /// </summary>
         /// <param name="request">Account creation settings.</param>
         /// <returns>Trusted account ID and API key.</returns>
         /// <remarks>Please use service-defined access token as 'api-key'.</remarks>
         [HttpPost]
-        [ProducesResponseType(typeof(AccountDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest request)
@@ -43,18 +44,18 @@ namespace Lykke.Service.HftInternalService.Controllers
                 return Unauthorized();
             }
 
-            var account = await _trustedAccountService.CreateAccount(request.ClientId);
-            return Ok(new AccountDto { ApiKey = account.ApiKey, Id = account.Id });
+            var account = await _accountService.CreateAccount(request.ClientId);
+            return Ok(account);
         }
 
         /// <summary>
-        /// Get trusted account.
+        /// Get HFT account.
         /// </summary>
         /// <param name="id">Client ID</param>
         /// <returns>Trusted account DTO.</returns>
         /// <remarks>Please use service-defined access token as 'api-key'.</remarks>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(AccountDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> GetAccount(string id)
@@ -67,27 +68,35 @@ namespace Lykke.Service.HftInternalService.Controllers
             //    return Forbid();
             //}
 
-            var account = await _trustedAccountService.GetAccount(id);
-            return Ok(new AccountDto { ApiKey = account.ApiKey, Id = account.Id });
+            var account = await _accountService.GetAccount(id);
+            return Ok(account);
         }
 
         /// <summary>
-        /// Get trusted account balances.
+        /// Delete HFT account.
         /// </summary>
         /// <param name="id">Client ID</param>
-        /// <returns>Trusted account balances.</returns>
         /// <remarks>Please use service-defined access token as 'api-key'.</remarks>
-        [HttpGet("{id}/balances")]
-        [ProducesResponseType(typeof(AccountDto), (int)HttpStatusCode.OK)]
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<IActionResult> GetAccountBalances(string id)
+        public async Task<IActionResult> DeleteAccount(string id)
         {
-            throw new NotImplementedException();
-        }
+            // todo: check admin api key
+            // todo: use request headers for auth
+            //var userId = User.GetUserId();
+            //if (userId != _settings.ApiKey)
+            //{
+            //    return Forbid();
+            //}
 
+            var account = await _accountService.GetAccount(id);
+            return Ok(new AccountDto { ApiKey = account.ApiKey, Id = account.Id });
+        }
+        
         /// <summary>
-        /// CashInOut.
+        /// Cash-in/out. Only for testing purpose. Should be removed.
         /// </summary>
         /// <param name="accountId"></param>
         /// <param name="assetId"></param>
@@ -100,7 +109,7 @@ namespace Lykke.Service.HftInternalService.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> CashInOut(string accountId, [FromQuery] string assetId, [FromQuery] double amount)
         {
-            var result = await _trustedAccountService.CashInOut(accountId, assetId, amount);
+            var result = await _accountService.CashInOut(accountId, assetId, amount);
             return Ok(result);
         }
     }

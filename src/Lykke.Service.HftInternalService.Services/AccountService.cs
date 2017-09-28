@@ -6,30 +6,26 @@ using Lykke.Service.HftInternalService.Core.Services;
 
 namespace Lykke.Service.HftInternalService.Services
 {
-    public class TrustedAccountService : ITrustedAccountService
+    public class AccountService : IAccountService
     {
-        private readonly IApiKeyGenerator _apiKeyGenerator;
+        private readonly IApiKeyService _apiKeyService;
         private readonly IMatchingEngineClient _matchingEngineClient;
-        public TrustedAccountService(IApiKeyGenerator apiKeyGenerator, IMatchingEngineClient matchingEngineClient)
+        public AccountService(IApiKeyService apiKeyService, IMatchingEngineClient matchingEngineClient)
         {
             _matchingEngineClient = matchingEngineClient ?? throw new ArgumentNullException(nameof(matchingEngineClient));
-            _apiKeyGenerator = apiKeyGenerator ?? throw new ArgumentNullException(nameof(apiKeyGenerator));
+            _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
         }
 
-        public async Task<TrustedAccount> CreateAccount(string clientId)
+        public async Task<Account> CreateAccount(string clientId)
         {
-            var apiKey = await _apiKeyGenerator.GenerateApiKeyAsync(clientId);
-            return new TrustedAccount { ApiKey = apiKey, Id = Guid.Empty };
+            var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId);
+            return new Account { ApiKey = apiKey, Id = Guid.Empty, ClientId = clientId };
         }
 
-        public async Task<TrustedAccount> GetAccount(string accountId)
+        public async Task<Account> GetAccount(string accountId)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task GetBalances(string accountId)
-        {
-            throw new NotImplementedException();
+            var apiKey = await _apiKeyService.GetApiKeyAsync(accountId);
+            return new Account { ApiKey = apiKey, Id = Guid.Empty, ClientId = accountId };
         }
 
         public async Task<string> CashInOut(string accountId, string assetId, double amount)

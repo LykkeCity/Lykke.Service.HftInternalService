@@ -3,8 +3,9 @@
 namespace Lykke.Service.HftInternalService.Core.Services
 {
 
-    public interface IApiKeyGenerator
+    public interface IApiKeyService
     {
         Task<string> GenerateApiKeyAsync(string clientId);
+        Task<string> GetApiKeyAsync(string clientId);
     }
 }
