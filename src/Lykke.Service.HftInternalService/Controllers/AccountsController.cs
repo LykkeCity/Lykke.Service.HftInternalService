@@ -38,22 +38,7 @@ namespace Lykke.Service.HftInternalService.Controllers
             var account = await _accountService.CreateAccount(request.ClientId);
             return Ok(account);
         }
-
-        /// <summary>
-        /// Get HFT account.
-        /// </summary>
-        /// <param name="id">Account ID</param>
-        /// <returns>Trusted account DTO.</returns>
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<IActionResult> GetAccount(string id)
-        {
-            var account = await _accountService.GetAccount(id);
-            return Ok(account);
-        }
-
+        
         /// <summary>
         /// Get all api keys for a specified account.
         /// </summary>
