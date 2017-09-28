@@ -25,7 +25,7 @@ namespace Lykke.Service.HftInternalService.Controllers
         }
 
         /// <summary>
-        /// Create HFT account for specified client.
+        /// Create HFT account for a specified client.
         /// </summary>
         /// <param name="request">Account creation settings.</param>
         /// <returns>Trusted account ID and API key.</returns>
@@ -42,7 +42,7 @@ namespace Lykke.Service.HftInternalService.Controllers
         /// <summary>
         /// Get HFT account.
         /// </summary>
-        /// <param name="id">Client ID</param>
+        /// <param name="id">Account ID</param>
         /// <returns>Trusted account DTO.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
@@ -67,7 +67,23 @@ namespace Lykke.Service.HftInternalService.Controllers
             var keys = await _apiKeyService.GetApiKeysAsync(accountId);
             return Ok(keys);
         }
-        
+
+        /// <summary>
+        /// Generate api-key for a specified account.
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="request">Key creation settings.</param>
+        /// <returns>Account ID and API key.</returns>
+        [HttpPost("{accountId}/keys")]
+        [ProducesResponseType(typeof(ApiKey), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<IActionResult> GenerateKey(string accountId, [FromBody] CreateApiKeyRequest request)
+        {
+            var apiKey = await _apiKeyService.GenerateApiKeyAsync(accountId, request.Name);
+            return Ok(apiKey);
+        }
+
         /// <summary>
         /// Cash-in/out. Only for testing purpose. Should be removed.
         /// </summary>
@@ -75,7 +91,6 @@ namespace Lykke.Service.HftInternalService.Controllers
         /// <param name="assetId"></param>
         /// <param name="amount"></param>
         /// <returns>Trusted account balances.</returns>
-        /// <remarks>Please use service-defined access token as 'api-key'.</remarks>
         [HttpPost("{accountId}/CashInOut")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
