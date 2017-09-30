@@ -5,6 +5,7 @@ using Autofac.Extensions.DependencyInjection;
 using Common;
 using Common.Log;
 using Lykke.MatchingEngine.Connector.Services;
+using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
@@ -99,6 +100,10 @@ namespace Lykke.Service.HftInternalService.Modules
             builder.RegisterType<AccountService>()
                 .As<IAccountService>()
                 .SingleInstance();
+
+            builder.RegisterType<ClientAccountService>()
+                .As<IClientAccountService>()
+                .WithParameter(new TypedParameter(typeof(Uri), new Uri(_settings.CurrentValue.HftInternalService.ClientAccountServiceApiUrl)));
         }
 
         private void BindMongoDb(ContainerBuilder builder)
