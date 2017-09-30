@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Lykke.MatchingEngine.Connector.Abstractions.Services;
+using Lykke.Service.ClientAccount.Client.AutorestClient;
+using Lykke.Service.ClientAccount.Client.AutorestClient.Models;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
 
@@ -10,17 +12,32 @@ namespace Lykke.Service.HftInternalService.Services
     {
         private readonly IApiKeyService _apiKeyService;
         private readonly IMatchingEngineClient _matchingEngineClient;
-        public AccountService(IApiKeyService apiKeyService, IMatchingEngineClient matchingEngineClient)
+        private readonly IClientAccountService _clientAccountService;
+        public AccountService(IApiKeyService apiKeyService, IMatchingEngineClient matchingEngineClient, IClientAccountService clientAccountService)
         {
+            _clientAccountService = clientAccountService ?? throw new ArgumentNullException(nameof(clientAccountService));
             _matchingEngineClient = matchingEngineClient ?? throw new ArgumentNullException(nameof(matchingEngineClient));
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
         }
 
-        public async Task<Account> CreateAccount(string clientId)
+        public async Task<ApiKey> CreateAccount(string clientId)
         {
-            var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId);
-            // todo: use ClientAccount service for account creation
-            return new Account { ApiKeys = new[] { apiKey }, Id = Guid.Empty, ClientId = clientId };
+            var wallet = await _clientAccountService.CreateWalletAsync(new CreateWalletRequest(
+                clientId: clientId,
+                type: "HFT",
+                name: null));
+            var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId, wallet.Id);
+            return apiKey;
+        }
+
+        public async Task DeleteAccount(string key)
+        {
+            var apiKey = await _apiKeyService.GetApiKeyAsync(key);
+            if (apiKey != null)
+            {
+                await _clientAccountService.DeleteWalletAsync(apiKey.AccountId);
+                await _apiKeyService.DeleteApiKeyAsync(apiKey);
+            }
         }
 
         // todo: remove this method

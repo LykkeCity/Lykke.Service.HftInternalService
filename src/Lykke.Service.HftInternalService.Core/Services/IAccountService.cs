@@ -5,7 +5,8 @@ namespace Lykke.Service.HftInternalService.Core.Services
 {
     public interface IAccountService
     {
-        Task<Account> CreateAccount(string clientId);
+        Task<ApiKey> CreateAccount(string clientId);
+        Task DeleteAccount(string key);
         Task<string> CashInOut(string accountId, string assetId, double amount);
     }
 }
