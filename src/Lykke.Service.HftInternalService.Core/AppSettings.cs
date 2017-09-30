@@ -13,6 +13,7 @@ namespace Lykke.Service.HftInternalService.Core
     public class HftInternalServiceSettings
     {
         public DbSettings Db { get; set; }
+        public string ClientAccountServiceApiUrl { get; set; }
     }
     public class MatchingEngineSettings
     {

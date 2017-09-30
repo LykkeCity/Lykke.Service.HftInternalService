@@ -6,6 +6,6 @@ namespace Lykke.Service.HftInternalService.Core.Domain
     {
         public Guid Id { get; set; }
         public string ClientId { get; set; }
-        public ApiKey[] ApiKeys { get; set; }
+        public ApiKey ApiKey { get; set; }
     }
 }

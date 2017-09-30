@@ -1,23 +1,22 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Lykke.Service.HftInternalService.Core;
-using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lykke.Service.HftInternalService.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
-    public class AccountsController : Controller
+    public class KeysController : Controller
     {
         private readonly HighFrequencyTradingSettings _settings;
         private readonly IAccountService _accountService;
         private readonly IApiKeyService _apiKeyService;
 
-        public AccountsController(HighFrequencyTradingSettings settings, IAccountService accountService, IApiKeyService apiKeyService)
+        public KeysController(HighFrequencyTradingSettings settings, IAccountService accountService, IApiKeyService apiKeyService)
         {
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
@@ -25,48 +24,43 @@ namespace Lykke.Service.HftInternalService.Controllers
         }
 
         /// <summary>
-        /// Create HFT account for a specified client.
+        /// Generate api-key for a specified account.
         /// </summary>
-        /// <param name="request">Account creation settings.</param>
-        /// <returns>Trusted account ID and API key.</returns>
+        /// <param name="request">Key creation settings.</param>
+        /// <returns>Account ID and API key.</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest request)
         {
+            //var apiKey = await _apiKeyService.GenerateApiKeyAsync(accountId, request.Name);
+            //return Ok(apiKey);
             var account = await _accountService.CreateAccount(request.ClientId);
-            return Ok(account);
-        }
-        
-        /// <summary>
-        /// Get all api keys for a specified account.
-        /// </summary>
-        /// <param name="accountId"></param>
-        [HttpGet("{accountId}/keys")]
-        [ProducesResponseType(typeof(ApiKey[]), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<IActionResult> GetKeys(string accountId)
-        {
-            var keys = await _apiKeyService.GetApiKeysAsync(accountId);
-            return Ok(keys);
+            return Ok(new ApiKeyDto { Key = account.ApiKey.Id.ToString(), Wallet = account.ApiKey.AccountId });
         }
 
         /// <summary>
-        /// Generate api-key for a specified account.
+        /// Get all api keys for a specified client.
         /// </summary>
-        /// <param name="accountId"></param>
-        /// <param name="request">Key creation settings.</param>
-        /// <returns>Account ID and API key.</returns>
-        [HttpPost("{accountId}/keys")]
-        [ProducesResponseType(typeof(ApiKey), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<IActionResult> GenerateKey(string accountId, [FromBody] CreateApiKeyRequest request)
+        /// <param name="clientId"></param>
+        [HttpGet("{clientId}")]
+        [ProducesResponseType(typeof(ApiKeyDto[]), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetKeys(string clientId)
         {
-            var apiKey = await _apiKeyService.GenerateApiKeyAsync(accountId, request.Name);
-            return Ok(apiKey);
+            // todo: implement
+            var keys = await _apiKeyService.GetApiKeysAsync(clientId);
+            return Ok(keys.Select(key => new ApiKeyDto { Key = key.Id.ToString(), Wallet = key.AccountId }));
+        }
+
+        /// <summary>
+        /// Delete specified api-key.
+        /// </summary>
+        /// <param name="key"></param>
+        [HttpDelete("{key}")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> DeleteKey(string key)
+        {
+            // todo: implement using ClientAccount
+            return Ok();
         }
 
         /// <summary>

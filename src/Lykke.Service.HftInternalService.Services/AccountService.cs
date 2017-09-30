@@ -20,7 +20,7 @@ namespace Lykke.Service.HftInternalService.Services
         {
             var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId);
             // todo: use ClientAccount service for account creation
-            return new Account { ApiKeys = new[] { apiKey }, Id = Guid.Empty, ClientId = clientId };
+            return new Account { ApiKey = apiKey, Id = Guid.Empty, ClientId = clientId };
         }
 
         // todo: remove this method
