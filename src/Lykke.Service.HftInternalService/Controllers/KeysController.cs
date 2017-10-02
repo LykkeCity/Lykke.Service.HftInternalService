@@ -53,7 +53,7 @@ namespace Lykke.Service.HftInternalService.Controllers
                 return BadRequest();
 
             var keys = await _apiKeyService.GetApiKeysAsync(clientId);
-            return Ok(keys.Select(key => new ApiKeyDto { Key = key.Id.ToString(), Wallet = key.WalletId ?? key.ClientId }));   // remove ClientId usage here
+            return Ok(keys.Select(key => new ApiKeyDto { Key = key.Id.ToString(), Wallet = key.WalletId ?? key.ClientId }));   // remove ClientId usage here after DB migration
         }
 
         /// <summary>
