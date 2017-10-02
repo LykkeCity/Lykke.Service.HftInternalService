@@ -26,14 +26,14 @@ namespace Lykke.Service.HftInternalService.Services
             var apiKey = Guid.NewGuid();
             var apiKeyAsString = apiKey.ToString();
             await _distributedCache.SetStringAsync(GetCacheKey(apiKeyAsString), accountId);
-            var existedApiKey = await _apiKeyRepository.Get(x => x.AccountId == accountId && x.ValidTill == null);
+            var existedApiKey = await _apiKeyRepository.Get(x => x.WalletId == accountId && x.ValidTill == null);
             if (existedApiKey != null)
             {
                 await _distributedCache.RemoveAsync(GetCacheKey(existedApiKey.Id.ToString()));
                 existedApiKey.ValidTill = DateTime.UtcNow;
                 await _apiKeyRepository.Update(existedApiKey);
             }
-            var key = new ApiKey { Id = apiKey, ClientId = clientId, AccountId = accountId };
+            var key = new ApiKey { Id = apiKey, ClientId = clientId, WalletId = accountId };
             await _apiKeyRepository.Add(key);
 
             return key;

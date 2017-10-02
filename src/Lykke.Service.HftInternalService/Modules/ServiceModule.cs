@@ -97,8 +97,8 @@ namespace Lykke.Service.HftInternalService.Modules
                 .As<IRepository<ApiKey>>()
                 .SingleInstance();
 
-            builder.RegisterType<AccountService>()
-                .As<IAccountService>()
+            builder.RegisterType<WalletService>()
+                .As<IWalletService>()
                 .SingleInstance();
 
             builder.RegisterType<ClientAccountService>()

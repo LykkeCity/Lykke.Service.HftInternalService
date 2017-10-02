@@ -12,13 +12,13 @@ namespace Lykke.Service.HftInternalService.Controllers
     [Route("api/[controller]")]
     public class KeysController : Controller
     {
-        private readonly IAccountService _accountService;
+        private readonly IWalletService _walletService;
         private readonly IApiKeyService _apiKeyService;
 
-        public KeysController(IAccountService accountService, IApiKeyService apiKeyService)
+        public KeysController(IWalletService walletService, IApiKeyService apiKeyService)
         {
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
-            _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
+            _walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
         }
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace Lykke.Service.HftInternalService.Controllers
             if (request == null)
                 return BadRequest();
 
-            var apiKey = await _accountService.CreateAccount(request.ClientId, request.Name);
-            return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.AccountId });
+            var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name);
+            return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Lykke.Service.HftInternalService.Controllers
                 return BadRequest();
 
             var keys = await _apiKeyService.GetApiKeysAsync(clientId);
-            return Ok(keys.Select(key => new ApiKeyDto { Key = key.Id.ToString(), Wallet = key.AccountId ?? key.ClientId }));   // remove ClientId usage here
+            return Ok(keys.Select(key => new ApiKeyDto { Key = key.Id.ToString(), Wallet = key.WalletId ?? key.ClientId }));   // remove ClientId usage here
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Lykke.Service.HftInternalService.Controllers
             if (apiKey == null)
                 return NotFound();
 
-            await _accountService.DeleteAccount(apiKey);
+            await _walletService.DeleteWallet(apiKey);
             return Ok();
         }
     }
