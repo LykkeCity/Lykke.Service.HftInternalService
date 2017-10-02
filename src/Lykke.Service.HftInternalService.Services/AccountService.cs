@@ -20,24 +20,20 @@ namespace Lykke.Service.HftInternalService.Services
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
         }
 
-        public async Task<ApiKey> CreateAccount(string clientId)
+        public async Task<ApiKey> CreateAccount(string clientId, string name = null)
         {
             var wallet = await _clientAccountService.CreateWalletAsync(new CreateWalletRequest(
                 clientId: clientId,
                 type: "HFT",
-                name: null));
+                name: name));
             var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId, wallet.Id);
             return apiKey;
         }
 
-        public async Task DeleteAccount(string key)
+        public async Task DeleteAccount(ApiKey key)
         {
-            var apiKey = await _apiKeyService.GetApiKeyAsync(key);
-            if (apiKey != null)
-            {
-                await _clientAccountService.DeleteWalletAsync(apiKey.AccountId);
-                await _apiKeyService.DeleteApiKeyAsync(apiKey);
-            }
+            await _clientAccountService.DeleteWalletAsync(key.AccountId);
+            await _apiKeyService.DeleteApiKeyAsync(key);
         }
 
         // todo: remove this method

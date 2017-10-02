@@ -33,7 +33,7 @@ namespace Lykke.Service.HftInternalService.Services
                 existedApiKey.ValidTill = DateTime.UtcNow;
                 await _apiKeyRepository.Update(existedApiKey);
             }
-            var key = new ApiKey { Id = apiKey, ClientId = clientId, AccountId = accountId};
+            var key = new ApiKey { Id = apiKey, ClientId = clientId, AccountId = accountId };
             await _apiKeyRepository.Add(key);
 
             return key;
@@ -55,10 +55,14 @@ namespace Lykke.Service.HftInternalService.Services
             var existedApiKeys = _apiKeyRepository.FilterBy(x => x.ClientId == clientId && x.ValidTill == null).ToArray();
             return existedApiKeys;
         }
-        
+
         public async Task<ApiKey> GetApiKeyAsync(string id)
         {
-            return await _apiKeyRepository.Get(Guid.Parse(id));
+            if (Guid.TryParse(id, out Guid key))
+            {
+                return await _apiKeyRepository.Get(key);
+            }
+            return null;
         }
 
         private string GetCacheKey(string apiKey)
