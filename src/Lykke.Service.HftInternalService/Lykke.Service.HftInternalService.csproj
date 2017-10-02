@@ -54,7 +54,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Lykke.Service.ClientAccount.Client\Lykke.Service.ClientAccount.Client.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.AzureRepositories\Lykke.Service.HftInternalService.AzureRepositories.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.Core\Lykke.Service.HftInternalService.Core.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.MongoRepositories\Lykke.Service.HFT.MongoRepositories.csproj" />

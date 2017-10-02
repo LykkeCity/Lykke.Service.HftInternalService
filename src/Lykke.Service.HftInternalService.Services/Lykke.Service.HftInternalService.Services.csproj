@@ -12,10 +12,10 @@
     <PackageReference Include="Flurl.Http" Version="1.2.0" />
     <PackageReference Include="Lykke.Common" Version="1.1.97" />
     <PackageReference Include="Lykke.MatchingEngineConnector.Abstractions" Version="1.0.14" />
+    <PackageReference Include="Lykke.Service.ClientAccount.Client" Version="1.0.14-beta" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lykke.Service.ClientAccount.Client\Lykke.Service.ClientAccount.Client.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.Core\Lykke.Service.HftInternalService.Core.csproj" />
   </ItemGroup>
 
