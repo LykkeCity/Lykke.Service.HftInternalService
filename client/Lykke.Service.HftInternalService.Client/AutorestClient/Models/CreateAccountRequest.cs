@@ -9,23 +9,22 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
     using Newtonsoft.Json;
     using System.Linq;
 
-    public partial class IssueIndicator
+    public partial class CreateAccountRequest
     {
         /// <summary>
-        /// Initializes a new instance of the IssueIndicator class.
+        /// Initializes a new instance of the CreateAccountRequest class.
         /// </summary>
-        public IssueIndicator()
+        public CreateAccountRequest()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the IssueIndicator class.
+        /// Initializes a new instance of the CreateAccountRequest class.
         /// </summary>
-        public IssueIndicator(string type = default(string), string value = default(string))
+        public CreateAccountRequest(string clientId = default(string))
         {
-            Type = type;
-            Value = value;
+            ClientId = clientId;
             CustomInit();
         }
 
@@ -36,13 +35,8 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "Type")]
-        public string Type { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "Value")]
-        public string Value { get; set; }
+        [JsonProperty(PropertyName = "ClientId")]
+        public string ClientId { get; set; }
 
     }
 }

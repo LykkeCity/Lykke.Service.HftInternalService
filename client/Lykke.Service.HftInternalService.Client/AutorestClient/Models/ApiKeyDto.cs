@@ -7,27 +7,25 @@
 namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
 {
     using Newtonsoft.Json;
-    using System.Collections;
-    using System.Collections.Generic;
     using System.Linq;
 
-    public partial class ErrorResponse
+    public partial class ApiKeyDto
     {
         /// <summary>
-        /// Initializes a new instance of the ErrorResponse class.
+        /// Initializes a new instance of the ApiKeyDto class.
         /// </summary>
-        public ErrorResponse()
+        public ApiKeyDto()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the ErrorResponse class.
+        /// Initializes a new instance of the ApiKeyDto class.
         /// </summary>
-        public ErrorResponse(string errorMessage = default(string), IDictionary<string, IList<string>> modelErrors = default(IDictionary<string, IList<string>>))
+        public ApiKeyDto(string key = default(string), string wallet = default(string))
         {
-            ErrorMessage = errorMessage;
-            ModelErrors = modelErrors;
+            Key = key;
+            Wallet = wallet;
             CustomInit();
         }
 
@@ -38,13 +36,13 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "ErrorMessage")]
-        public string ErrorMessage { get; private set; }
+        [JsonProperty(PropertyName = "Key")]
+        public string Key { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "ModelErrors")]
-        public IDictionary<string, IList<string>> ModelErrors { get; private set; }
+        [JsonProperty(PropertyName = "Wallet")]
+        public string Wallet { get; set; }
 
     }
 }
