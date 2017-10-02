@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
@@ -20,27 +21,48 @@ namespace Lykke.Service.HftInternalService.Services
             _apiKeyRepository = orderStateRepository ?? throw new ArgumentNullException(nameof(orderStateRepository));
         }
 
-        public async Task<string> GenerateApiKeyAsync(string clientId)
+        public async Task<ApiKey> GenerateApiKeyAsync(string clientId, string accountId)
         {
             var apiKey = Guid.NewGuid();
             var apiKeyAsString = apiKey.ToString();
-            await _distributedCache.SetStringAsync(GetCacheKey(apiKeyAsString), clientId);
-            var existedApiKey = await _apiKeyRepository.Get(x => x.ClientId == clientId && x.ValidTill == null);
+            await _distributedCache.SetStringAsync(GetCacheKey(apiKeyAsString), accountId);
+            var existedApiKey = await _apiKeyRepository.Get(x => x.AccountId == accountId && x.ValidTill == null);
             if (existedApiKey != null)
             {
                 await _distributedCache.RemoveAsync(GetCacheKey(existedApiKey.Id.ToString()));
                 existedApiKey.ValidTill = DateTime.UtcNow;
                 await _apiKeyRepository.Update(existedApiKey);
             }
-            await _apiKeyRepository.Add(new ApiKey { Id = apiKey, ClientId = clientId });
+            var key = new ApiKey { Id = apiKey, ClientId = clientId, AccountId = accountId };
+            await _apiKeyRepository.Add(key);
 
-            return apiKeyAsString;
+            return key;
         }
 
-        public async Task<string> GetApiKeyAsync(string clientId)
+        public async Task DeleteApiKeyAsync(ApiKey key)
         {
-            var existedApiKey = await _apiKeyRepository.Get(x => x.ClientId == clientId && x.ValidTill == null);
-            return existedApiKey?.Id.ToString();
+            var existedApiKey = await _apiKeyRepository.Get(key.Id);
+            if (existedApiKey != null)
+            {
+                await _distributedCache.RemoveAsync(GetCacheKey(existedApiKey.Id.ToString()));
+                existedApiKey.ValidTill = DateTime.UtcNow;
+                await _apiKeyRepository.Update(existedApiKey);
+            }
+        }
+
+        public async Task<ApiKey[]> GetApiKeysAsync(string clientId)
+        {
+            var existedApiKeys = _apiKeyRepository.FilterBy(x => x.ClientId == clientId && x.ValidTill == null).ToArray();
+            return existedApiKeys;
+        }
+
+        public async Task<ApiKey> GetApiKeyAsync(string id)
+        {
+            if (Guid.TryParse(id, out Guid key))
+            {
+                return await _apiKeyRepository.Get(key);
+            }
+            return null;
         }
 
         private string GetCacheKey(string apiKey)
