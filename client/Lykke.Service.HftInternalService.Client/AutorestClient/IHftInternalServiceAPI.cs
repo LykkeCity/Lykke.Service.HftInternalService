@@ -46,7 +46,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         Task<HttpOperationResponse<object>> IsAliveWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Generate api-key for a specified account.
+        /// Generate api-key for a specified client.
         /// </summary>
         /// <param name='request'>
         /// Key creation settings.

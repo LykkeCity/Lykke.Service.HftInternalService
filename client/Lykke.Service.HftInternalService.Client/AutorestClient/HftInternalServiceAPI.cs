@@ -280,7 +280,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         }
 
         /// <summary>
-        /// Generate api-key for a specified account.
+        /// Generate api-key for a specified client.
         /// </summary>
         /// <param name='request'>
         /// Key creation settings.

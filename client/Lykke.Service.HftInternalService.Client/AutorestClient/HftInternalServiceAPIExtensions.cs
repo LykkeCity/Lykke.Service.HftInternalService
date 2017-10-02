@@ -46,7 +46,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             }
 
             /// <summary>
-            /// Generate api-key for a specified account.
+            /// Generate api-key for a specified client.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -60,7 +60,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             }
 
             /// <summary>
-            /// Generate api-key for a specified account.
+            /// Generate api-key for a specified client.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.

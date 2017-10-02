@@ -22,10 +22,10 @@ namespace Lykke.Service.HftInternalService.Controllers
         }
 
         /// <summary>
-        /// Generate api-key for a specified account.
+        /// Generate api-key for a specified client.
         /// </summary>
         /// <param name="request">Key creation settings.</param>
-        /// <returns>Account ID and API key.</returns>
+        /// <returns>Wallet ID and API key.</returns>
         [HttpPost]
         [SwaggerOperation("CreateKey")]
         [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
