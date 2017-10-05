@@ -9,22 +9,23 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
     using Newtonsoft.Json;
     using System.Linq;
 
-    public partial class CreateAccountRequest
+    public partial class CreateApiKeyRequest
     {
         /// <summary>
-        /// Initializes a new instance of the CreateAccountRequest class.
+        /// Initializes a new instance of the CreateApiKeyRequest class.
         /// </summary>
-        public CreateAccountRequest()
+        public CreateApiKeyRequest()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the CreateAccountRequest class.
+        /// Initializes a new instance of the CreateApiKeyRequest class.
         /// </summary>
-        public CreateAccountRequest(string clientId = default(string))
+        public CreateApiKeyRequest(string clientId = default(string), string name = default(string))
         {
             ClientId = clientId;
+            Name = name;
             CustomInit();
         }
 
@@ -37,6 +38,11 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
         /// </summary>
         [JsonProperty(PropertyName = "ClientId")]
         public string ClientId { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "Name")]
+        public string Name { get; set; }
 
     }
 }

@@ -6,7 +6,7 @@ namespace Lykke.Service.HftInternalService.Core.Services
 
     public interface IApiKeyService
     {
-        Task<ApiKey> GenerateApiKeyAsync(string clientId, string accountId);
+        Task<ApiKey> GenerateApiKeyAsync(string clientId, string walletId);
         Task DeleteApiKeyAsync(ApiKey key);
         Task<ApiKey[]> GetApiKeysAsync(string clientId);
         Task<ApiKey> GetApiKeyAsync(string id);

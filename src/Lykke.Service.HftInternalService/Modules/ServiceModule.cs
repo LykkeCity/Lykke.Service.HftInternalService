@@ -2,9 +2,7 @@
 using Autofac;
 using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
-using Common;
 using Common.Log;
-using Lykke.MatchingEngine.Connector.Services;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
@@ -63,7 +61,6 @@ namespace Lykke.Service.HftInternalService.Modules
 
             BindMongoDb(builder);
             BindRedis(builder);
-            RegisterMatchingEngine(builder);
 
             builder.Populate(_services);
         }
@@ -97,8 +94,8 @@ namespace Lykke.Service.HftInternalService.Modules
                 .As<IRepository<ApiKey>>()
                 .SingleInstance();
 
-            builder.RegisterType<AccountService>()
-                .As<IAccountService>()
+            builder.RegisterType<WalletService>()
+                .As<IWalletService>()
                 .SingleInstance();
 
             builder.RegisterType<ClientAccountService>()
@@ -114,14 +111,5 @@ namespace Lykke.Service.HftInternalService.Modules
             var database = new MongoClient(mongoUrl).GetDatabase(mongoUrl.DatabaseName);
             builder.RegisterInstance(database);
         }
-
-        private void RegisterMatchingEngine(ContainerBuilder builder)
-        {
-            var socketLog = new SocketLogDynamic(i => { },
-                str => Console.WriteLine(DateTime.UtcNow.ToIsoDateTime() + ": " + str));
-
-            builder.BindMeClient(_settings.CurrentValue.MatchingEngineClient.IpEndpoint.GetClientIpEndPoint(), socketLog);
-        }
-
     }
 }

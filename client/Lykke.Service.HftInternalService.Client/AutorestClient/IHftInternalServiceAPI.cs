@@ -35,23 +35,6 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
 
 
         /// <summary>
-        /// Cash-in/out. Only for testing purpose. Should be removed.
-        /// </summary>
-        /// <param name='accountId'>
-        /// </param>
-        /// <param name='assetId'>
-        /// </param>
-        /// <param name='amount'>
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<HttpOperationResponse<string>> ApiAccountsByAccountIdCashInOutPostWithHttpMessagesAsync(string accountId, string assetId = default(string), double? amount = default(double?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
         /// Checks service is alive
         /// </summary>
         /// <param name='customHeaders'>
@@ -63,7 +46,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         Task<HttpOperationResponse<object>> IsAliveWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Generate api-key for a specified account.
+        /// Generate api-key for a specified client.
         /// </summary>
         /// <param name='request'>
         /// Key creation settings.
@@ -74,7 +57,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ApiKeyDto>> ApiKeysPostWithHttpMessagesAsync(CreateAccountRequest request = default(CreateAccountRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ApiKeyDto>> CreateKeyWithHttpMessagesAsync(CreateApiKeyRequest request = default(CreateApiKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get all api keys for a specified client.
@@ -87,7 +70,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<IList<ApiKeyDto>>> ApiKeysByClientIdGetWithHttpMessagesAsync(string clientId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<IList<ApiKeyDto>>> GetKeysWithHttpMessagesAsync(string clientId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete specified api-key.
@@ -100,7 +83,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiKeysByKeyDeleteWithHttpMessagesAsync(string key, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> DeleteKeyWithHttpMessagesAsync(string key, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }
