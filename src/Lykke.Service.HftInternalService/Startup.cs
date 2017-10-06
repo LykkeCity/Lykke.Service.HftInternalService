@@ -82,7 +82,7 @@ namespace Lykke.Service.HftInternalService
                 app.UseSwagger();
                 app.UseSwaggerUi();
                 app.UseStaticFiles();
-                
+
                 appLifetime.ApplicationStopped.Register(CleanUp);
             }
             catch (Exception ex)
@@ -91,7 +91,7 @@ namespace Lykke.Service.HftInternalService
                 throw;
             }
         }
-        
+
         private void CleanUp()
         {
             try
@@ -126,17 +126,13 @@ namespace Lykke.Service.HftInternalService
             // Creating azure storage logger, which logs own messages to concole log
             if (!string.IsNullOrEmpty(dbLogConnectionString) && !(dbLogConnectionString.StartsWith("${") && dbLogConnectionString.EndsWith("}")))
             {
-                const string appName = "Lykke.Service.HftInternalService";
-
                 var persistenceManager = new LykkeLogToAzureStoragePersistenceManager(
-                    appName,
                     AzureTableStorage<LogEntity>.Create(dbLogConnectionStringManager, "HftInternalServiceLog", consoleLogger),
                     consoleLogger);
 
-                var slackNotificationsManager = new LykkeLogToAzureSlackNotificationsManager(appName, slackService, consoleLogger);
+                var slackNotificationsManager = new LykkeLogToAzureSlackNotificationsManager(slackService, consoleLogger);
 
                 var azureStorageLogger = new LykkeLogToAzureStorage(
-                    appName,
                     persistenceManager,
                     slackNotificationsManager,
                     consoleLogger);
