@@ -22,7 +22,7 @@ namespace Lykke.Service.HftInternalService.Controllers
         }
 
         /// <summary>
-        /// Generate api-key for a specified client.
+        /// Create api-key for a specified client.
         /// </summary>
         /// <param name="request">Key creation settings.</param>
         /// <returns>Wallet ID and API key.</returns>
@@ -36,6 +36,29 @@ namespace Lykke.Service.HftInternalService.Controllers
                 return BadRequest();
 
             var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name);
+            return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
+        }
+
+        /// <summary>
+        /// Create new api-key for existing wallet.
+        /// </summary>
+        /// <param name="request">Client id and wallet id.</param>
+        /// <returns>Wallet ID and API key.</returns>
+        [HttpPost("new")]
+        [SwaggerOperation("RegenerateKey")]
+        [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> RegenerateKey([FromBody] RegenerateKeyRequest request)
+        {
+            if (request == null)
+                return BadRequest();
+
+            var existingKey = (await _apiKeyService.GetApiKeysAsync(request.ClientId)).FirstOrDefault(x => x.WalletId == request.WalletId);
+            if (existingKey == null)
+                return NotFound();
+
+            var apiKey = await _apiKeyService.GenerateApiKeyAsync(request.ClientId, request.WalletId);
             return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
         }
 
