@@ -48,8 +48,7 @@ namespace Lykke.Service.HftInternalService.Modules
             builder.RegisterType<HealthService>()
                 .As<IHealthService>()
                 .SingleInstance();
-
-            // TODO: Add your dependencies here
+            
             builder.RegisterInstance(_settings)
                 .SingleInstance();
             builder.RegisterInstance(_settings.CurrentValue.HftInternalService)
