@@ -32,91 +32,77 @@ namespace Lykke.Service.HftInternalService
             Configuration = builder.Build();
 
             Environment = env;
-
-            Console.WriteLine($"ENV_INFO: {System.Environment.GetEnvironmentVariable("ENV_INFO")}");
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                .AddJsonOptions(options =>
+            try
+            {
+                services.AddMvc()
+                        .AddJsonOptions(options =>
+                        {
+                            options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                        });
+
+                services.AddSwaggerGen(options =>
                 {
-                    options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                    options.DefaultLykkeConfiguration("v1", "HftInternalService API");
                 });
 
-            services.AddSwaggerGen(options =>
+                var builder = new ContainerBuilder();
+                var appSettings = Configuration.LoadSettings<AppSettings>();
+                Log = CreateLogWithSlack(services, appSettings);
+
+                //builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.HftInternalService), Log));
+                builder.RegisterModule(new ServiceModule(appSettings, Log));
+                builder.Populate(services);
+                ApplicationContainer = builder.Build();
+
+                return new AutofacServiceProvider(ApplicationContainer);
+            }
+            catch (Exception ex)
             {
-                options.DefaultLykkeConfiguration("v1", "HftInternalService API");
-            });
-
-            var builder = new ContainerBuilder();
-            var appSettings = Configuration.LoadSettings<AppSettings>();
-            Log = CreateLogWithSlack(services, appSettings);
-
-            //builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.HftInternalService), Log));
-            builder.RegisterModule(new ServiceModule(appSettings, Log));
-            builder.Populate(services);
-            ApplicationContainer = builder.Build();
-
-            return new AutofacServiceProvider(ApplicationContainer);
+                Log?.WriteFatalErrorAsync(nameof(Startup), nameof(ConfigureServices), "", ex);
+                throw;
+            }
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseLykkeMiddleware("HftInternalService", ex => new {Message = "Technical problem"});
-
-            app.UseMvc();
-            app.UseSwagger();
-            app.UseSwaggerUi();
-            app.UseStaticFiles();
-
-            appLifetime.ApplicationStarted.Register(StartApplication);
-            appLifetime.ApplicationStopping.Register(StopApplication);
-            appLifetime.ApplicationStopped.Register(CleanUp);
-        }
-
-        private void StartApplication()
-        {
             try
             {
-                // TODO: Implement your startup logic here. 
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                }
+
+                app.UseLykkeMiddleware("HftInternalService", ex => new { Message = "Technical problem" });
+
+                app.UseMvc();
+                app.UseSwagger();
+                app.UseSwaggerUi();
+                app.UseStaticFiles();
+                
+                appLifetime.ApplicationStopped.Register(CleanUp);
             }
             catch (Exception ex)
             {
-                Log.WriteFatalErrorAsync(nameof(Startup), nameof(StartApplication), "", ex);
+                Log?.WriteFatalErrorAsync(nameof(Startup), nameof(ConfigureServices), "", ex);
+                throw;
             }
         }
-
-        private void StopApplication()
-        {
-            try
-            {
-                // TODO: Implement your shutdown logic here. 
-                // Service still can recieve and process requests here, so take care about it.
-            }
-            catch (Exception ex)
-            {
-                Log.WriteFatalErrorAsync(nameof(Startup), nameof(StopApplication), "", ex);
-            }
-        }
-
+        
         private void CleanUp()
         {
             try
             {
-                // TODO: Implement your clean up logic here.
-                // Service can't recieve and process requests here, so you can destroy all resources
-
                 ApplicationContainer.Dispose();
             }
             catch (Exception ex)
             {
-                Log.WriteFatalErrorAsync(nameof(Startup), nameof(CleanUp), "", ex);
+                Log?.WriteFatalErrorAsync(nameof(Startup), nameof(CleanUp), "", ex);
+                (Log as IDisposable)?.Dispose();
+                throw;
             }
         }
 
