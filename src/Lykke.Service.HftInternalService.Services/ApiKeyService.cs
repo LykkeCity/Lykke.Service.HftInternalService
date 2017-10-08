@@ -11,12 +11,12 @@ namespace Lykke.Service.HftInternalService.Services
     public class ApiKeyService : IApiKeyService
     {
         private readonly IDistributedCache _distributedCache;
-        private readonly HighFrequencyTradingSettings _settings;
+        private readonly CacheSettings _cacheSettings;
         private readonly IRepository<ApiKey> _apiKeyRepository;
 
-        public ApiKeyService(IDistributedCache distributedCache, HighFrequencyTradingSettings settings, IRepository<ApiKey> orderStateRepository)
+        public ApiKeyService(IDistributedCache distributedCache, CacheSettings cacheSettings, IRepository<ApiKey> orderStateRepository)
         {
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _cacheSettings = cacheSettings ?? throw new ArgumentNullException(nameof(cacheSettings));
             _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
             _apiKeyRepository = orderStateRepository ?? throw new ArgumentNullException(nameof(orderStateRepository));
         }
@@ -67,7 +67,7 @@ namespace Lykke.Service.HftInternalService.Services
 
         private string GetCacheKey(string apiKey)
         {
-            return _settings.CacheSettings.GetApiKey(apiKey);
+            return _cacheSettings.GetApiKey(apiKey);
         }
     }
 }

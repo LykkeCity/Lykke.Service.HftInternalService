@@ -48,12 +48,8 @@ namespace Lykke.Service.HftInternalService.Modules
             builder.RegisterType<HealthService>()
                 .As<IHealthService>()
                 .SingleInstance();
-            
-            builder.RegisterInstance(_settings)
-                .SingleInstance();
-            builder.RegisterInstance(_settings.CurrentValue.HftInternalService)
-                .SingleInstance();
-            builder.RegisterInstance(_settings.CurrentValue.HighFrequencyTradingService)
+
+            builder.RegisterInstance(_settings.CurrentValue.HighFrequencyTradingService.CacheSettings)
                 .SingleInstance();
 
             RegisterApiKeyService(builder);

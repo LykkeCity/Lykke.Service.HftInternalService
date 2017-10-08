@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace Lykke.Service.HftInternalService.Core
+﻿namespace Lykke.Service.HftInternalService.Core
 {
     public class AppSettings
     {
@@ -17,7 +15,6 @@ namespace Lykke.Service.HftInternalService.Core
 
     public class HighFrequencyTradingSettings
     {
-        public string ApiKey { get; set; }
         public CacheSettings CacheSettings { get; set; }
         public MongoSettings MongoSettings { get; set; }
     }
