@@ -53,7 +53,6 @@ namespace Lykke.Service.HftInternalService
                 var appSettings = Configuration.LoadSettings<AppSettings>();
                 Log = CreateLogWithSlack(services, appSettings);
 
-                //builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.HftInternalService), Log));
                 builder.RegisterModule(new ServiceModule(appSettings, Log));
                 builder.Populate(services);
                 ApplicationContainer = builder.Build();

@@ -21,7 +21,6 @@ namespace Lykke.Service.HftInternalService.Services
         {
             var wallet = await _clientAccountService.CreateWalletAsync(new CreateWalletRequest(
                 clientId: clientId,
-                type: "HFT",
                 name: name));
             var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId, wallet.Id);
             return apiKey;
