@@ -46,7 +46,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         Task<HttpOperationResponse<object>> IsAliveWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Generate api-key for a specified client.
+        /// Create api-key for a specified client.
         /// </summary>
         /// <param name='request'>
         /// Key creation settings.
@@ -58,6 +58,20 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<ApiKeyDto>> CreateKeyWithHttpMessagesAsync(CreateApiKeyRequest request = default(CreateApiKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Create new api-key for existing wallet.
+        /// </summary>
+        /// <param name='request'>
+        /// Client id and wallet id.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ApiKeyDto>> RegenerateKeyWithHttpMessagesAsync(RegenerateKeyRequest request = default(RegenerateKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get all api keys for a specified client.

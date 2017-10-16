@@ -48,16 +48,11 @@ namespace Lykke.Service.HftInternalService.Controllers
         [SwaggerOperation("RegenerateKey")]
         [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> RegenerateKey([FromBody] RegenerateKeyRequest request)
         {
             if (request == null)
                 return BadRequest();
-
-            var existingKey = (await _apiKeyService.GetApiKeysAsync(request.ClientId)).FirstOrDefault(x => x.WalletId == request.WalletId);
-            if (existingKey == null)
-                return NotFound();
-
+            
             var apiKey = await _apiKeyService.GenerateApiKeyAsync(request.ClientId, request.WalletId);
             return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
         }

@@ -46,7 +46,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             }
 
             /// <summary>
-            /// Generate api-key for a specified client.
+            /// Create api-key for a specified client.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -60,7 +60,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             }
 
             /// <summary>
-            /// Generate api-key for a specified client.
+            /// Create api-key for a specified client.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -74,6 +74,40 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             public static async Task<ApiKeyDto> CreateKeyAsync(this IHftInternalServiceAPI operations, CreateApiKeyRequest request = default(CreateApiKeyRequest), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.CreateKeyWithHttpMessagesAsync(request, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Create new api-key for existing wallet.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='request'>
+            /// Client id and wallet id.
+            /// </param>
+            public static ApiKeyDto RegenerateKey(this IHftInternalServiceAPI operations, RegenerateKeyRequest request = default(RegenerateKeyRequest))
+            {
+                return operations.RegenerateKeyAsync(request).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Create new api-key for existing wallet.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='request'>
+            /// Client id and wallet id.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<ApiKeyDto> RegenerateKeyAsync(this IHftInternalServiceAPI operations, RegenerateKeyRequest request = default(RegenerateKeyRequest), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.RegenerateKeyWithHttpMessagesAsync(request, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

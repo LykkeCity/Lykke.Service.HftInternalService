@@ -14,15 +14,25 @@ namespace Lykke.Service.HftInternalService
 #else
             Console.WriteLine("Is RELEASE");
 #endif           
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseUrls("http://*:5000")
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseStartup<Startup>()
-                .UseApplicationInsights()
-                .Build();
+            Console.WriteLine($"ENV_INFO: {Environment.GetEnvironmentVariable("ENV_INFO")}");
 
-            host.Run();
+            try
+            {
+                var host = new WebHostBuilder()
+                    .UseKestrel()
+                    .UseUrls("http://*:5000")
+                    .UseContentRoot(Directory.GetCurrentDirectory())
+                    .UseStartup<Startup>()
+                    .UseApplicationInsights()
+                    .Build();
+
+                host.Run();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Fatal error:");
+                Console.WriteLine(ex);
+            }
 
             Console.WriteLine("Terminated");
         }
