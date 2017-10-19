@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Lykke.Common" Version="3.0.2" />
-    <PackageReference Include="Lykke.Service.ClientAccount.Client" Version="1.0.24-beta" />
+    <PackageReference Include="Lykke.Service.ClientAccount.Client" Version="1.0.25-beta" />
   </ItemGroup>
 
   <ItemGroup>
