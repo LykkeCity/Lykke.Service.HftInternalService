@@ -22,10 +22,11 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
         /// <summary>
         /// Initializes a new instance of the CreateApiKeyRequest class.
         /// </summary>
-        public CreateApiKeyRequest(string clientId = default(string), string name = default(string))
+        public CreateApiKeyRequest(string clientId = default(string), string name = default(string), string description = default(string))
         {
             ClientId = clientId;
             Name = name;
+            Description = description;
             CustomInit();
         }
 
@@ -43,6 +44,11 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
         /// </summary>
         [JsonProperty(PropertyName = "Name")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "Description")]
+        public string Description { get; set; }
 
     }
 }
