@@ -7,5 +7,6 @@ namespace Lykke.Service.HftInternalService.Models
         [Required]
         public string ClientId { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
     }
 }
