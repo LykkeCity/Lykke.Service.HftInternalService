@@ -35,7 +35,7 @@ namespace Lykke.Service.HftInternalService.Controllers
             if (request == null)
                 return BadRequest();
 
-            var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name);
+            var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name, request.Description);
             return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
         }
 
