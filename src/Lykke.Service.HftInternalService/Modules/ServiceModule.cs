@@ -49,9 +49,6 @@ namespace Lykke.Service.HftInternalService.Modules
                 .As<IHealthService>()
                 .SingleInstance();
 
-            builder.RegisterInstance(_settings.CurrentValue.HighFrequencyTradingService.CacheSettings)
-                .SingleInstance();
-
             RegisterApiKeyService(builder);
 
             BindMongoDb(builder);
@@ -77,13 +74,13 @@ namespace Lykke.Service.HftInternalService.Modules
         private void RegisterApiKeyService(ContainerBuilder builder)
         {
             builder.RegisterType<ApiKeyService>()
+                .WithParameter(TypedParameter.From(_settings.CurrentValue.HighFrequencyTradingService.CacheSettings))
                 .WithParameter(
                     new ResolvedParameter(
                         (pi, ctx) => pi.ParameterType == typeof(IDistributedCache),
                         (pi, ctx) => ctx.ResolveKeyed<IDistributedCache>("apiKeys")))
                 .As<IApiKeyService>()
                 .SingleInstance();
-
 
             builder.RegisterType<MongoRepository<ApiKey>>()
                 .As<IRepository<ApiKey>>()

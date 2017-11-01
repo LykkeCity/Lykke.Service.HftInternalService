@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AzureStorage.Tables;
@@ -82,7 +83,8 @@ namespace Lykke.Service.HftInternalService
                 app.UseSwaggerUi();
                 app.UseStaticFiles();
 
-                appLifetime.ApplicationStopped.Register(CleanUp);
+                appLifetime.ApplicationStarted.Register(() => StartApplication().Wait());
+                appLifetime.ApplicationStopped.Register(() => CleanUp().Wait());
             }
             catch (Exception ex)
             {
@@ -91,16 +93,41 @@ namespace Lykke.Service.HftInternalService
             }
         }
 
-        private void CleanUp()
+        private async Task StartApplication()
         {
             try
             {
+                // NOTE: Service not yet recieve and process requests here
+
+                await Log.WriteMonitorAsync("", "", "Started");
+            }
+            catch (Exception ex)
+            {
+                await Log.WriteFatalErrorAsync(nameof(Startup), nameof(StartApplication), "", ex);
+                throw;
+            }
+        }
+
+        private async Task CleanUp()
+        {
+            try
+            {
+                // NOTE: Service can't recieve and process requests here, so you can destroy all resources
+
+                if (Log != null)
+                {
+                    await Log.WriteMonitorAsync("", "", "Terminating");
+                }
+
                 ApplicationContainer.Dispose();
             }
             catch (Exception ex)
             {
-                Log?.WriteFatalErrorAsync(nameof(Startup), nameof(CleanUp), "", ex);
-                (Log as IDisposable)?.Dispose();
+                if (Log != null)
+                {
+                    await Log.WriteFatalErrorAsync(nameof(Startup), nameof(CleanUp), "", ex);
+                    (Log as IDisposable)?.Dispose();
+                }
                 throw;
             }
         }
