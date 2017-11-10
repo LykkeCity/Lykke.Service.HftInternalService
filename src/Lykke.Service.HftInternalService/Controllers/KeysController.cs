@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ namespace Lykke.Service.HftInternalService.Controllers
     {
         private readonly IWalletService _walletService;
         private readonly IApiKeyService _apiKeyService;
+        private readonly IClientAccountService _clientAccountService;
 
-        public KeysController(IWalletService walletService, IApiKeyService apiKeyService)
+        public KeysController(IWalletService walletService, IApiKeyService apiKeyService, IClientAccountService clientAccountService)
         {
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
             _walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
+            _clientAccountService = clientAccountService ?? throw new ArgumentNullException(nameof(clientAccountService));
         }
 
         /// <summary>
@@ -34,6 +37,13 @@ namespace Lykke.Service.HftInternalService.Controllers
         {
             if (request == null)
                 return BadRequest();
+
+            var client = await _clientAccountService.GetClientByIdAsync(request.ClientId);
+            if (client == null)
+            {
+                ModelState.AddModelError("ClientId", request.ClientId);
+                return BadRequest(ModelState);
+            }
 
             var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name, request.Description);
             return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
@@ -52,7 +62,21 @@ namespace Lykke.Service.HftInternalService.Controllers
         {
             if (request == null)
                 return BadRequest();
-            
+
+            var client = await _clientAccountService.GetClientByIdAsync(request.ClientId);
+            if (client == null)
+            {
+                ModelState.AddModelError("ClientId", request.ClientId);
+                return BadRequest(ModelState);
+            }
+
+            var wallet = await _clientAccountService.GetWalletAsync(request.WalletId);
+            if (wallet == null)
+            {
+                ModelState.AddModelError("WalletId", request.WalletId);
+                return BadRequest(ModelState);
+            }
+
             var apiKey = await _apiKeyService.GenerateApiKeyAsync(request.ClientId, request.WalletId);
             return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
         }
