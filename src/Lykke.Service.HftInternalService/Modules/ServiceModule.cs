@@ -1,16 +1,12 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Autofac.Core;
-using Autofac.Extensions.DependencyInjection;
 using Common.Log;
-using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.MongoRepositories;
 using Lykke.Service.HftInternalService.Services;
 using Lykke.SettingsReader;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Redis;
 using MongoDB.Bson.Serialization.Conventions;
@@ -22,25 +18,15 @@ namespace Lykke.Service.HftInternalService.Modules
     {
         private readonly IReloadingManager<AppSettings> _settings;
         private readonly ILog _log;
-        // NOTE: you can remove it if you don't need to use IServiceCollection extensions to register service specific dependencies
-        private readonly IServiceCollection _services;
 
         public ServiceModule(IReloadingManager<AppSettings> settings, ILog log)
         {
             _settings = settings;
             _log = log;
-
-            _services = new ServiceCollection();
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            // TODO: Do not register entire settings in container, pass necessary settings to services which requires them
-            // ex:
-            //  builder.RegisterType<QuotesPublisher>()
-            //      .As<IQuotesPublisher>()
-            //      .WithParameter(TypedParameter.From(_settings.CurrentValue.QuotesPublication))
-
             builder.RegisterInstance(_log)
                 .As<ILog>()
                 .SingleInstance();
@@ -53,8 +39,6 @@ namespace Lykke.Service.HftInternalService.Modules
 
             BindMongoDb(builder);
             BindRedis(builder);
-
-            builder.Populate(_services);
         }
 
 
@@ -89,10 +73,6 @@ namespace Lykke.Service.HftInternalService.Modules
             builder.RegisterType<WalletService>()
                 .As<IWalletService>()
                 .SingleInstance();
-
-            builder.RegisterType<ClientAccountService>()
-                .As<IClientAccountService>()
-                .WithParameter(new TypedParameter(typeof(Uri), new Uri(_settings.CurrentValue.HftInternalService.ClientAccountServiceApiUrl)));
         }
 
         private void BindMongoDb(ContainerBuilder builder)
