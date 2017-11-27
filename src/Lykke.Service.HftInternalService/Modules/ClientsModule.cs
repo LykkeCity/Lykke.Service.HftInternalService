@@ -16,7 +16,7 @@ namespace Lykke.Service.HftInternalService.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterLykkeServiceClient(_settings.CurrentValue.ClientAccountClient.ServiceUrl);
+            builder.RegisterLykkeServiceClient(_settings.CurrentValue.ClientAccountServiceClient.ServiceUrl);
         }
     }
 }

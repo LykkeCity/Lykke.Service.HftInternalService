@@ -5,7 +5,7 @@
         public HftInternalServiceSettings HftInternalService { get; set; }
         public SlackNotificationsSettings SlackNotifications { get; set; }
         public HighFrequencyTradingSettings HighFrequencyTradingService { get; set; }
-        public ClientAccountClient ClientAccountClient { get; set; }
+        public ClientAccountServiceClient ClientAccountServiceClient { get; set; }
     }
 
     public class HftInternalServiceSettings
@@ -57,7 +57,7 @@
         public string QueueName { get; set; }
     }
 
-    public class ClientAccountClient
+    public class ClientAccountServiceClient
     {
         public string ServiceUrl { get; set; }
     }
