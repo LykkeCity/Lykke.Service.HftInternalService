@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using Common.Log;
+using Lykke.Service.HftInternalService.Client.AutorestClient;
 
 namespace Lykke.Service.HftInternalService.Client
 {
@@ -14,7 +15,7 @@ namespace Lykke.Service.HftInternalService.Client
             if (string.IsNullOrWhiteSpace(serviceUrl))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(serviceUrl));
 
-            builder.RegisterInstance(new HftInternalServiceClient(serviceUrl, log)).As<IHftInternalServiceClient>().SingleInstance();
+            builder.RegisterInstance(new HftInternalServiceAPI(new Uri(serviceUrl))).As<IHftInternalServiceAPI>().SingleInstance();
         }
     }
 }

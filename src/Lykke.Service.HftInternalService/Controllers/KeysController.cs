@@ -6,7 +6,7 @@ using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.SwaggerGen.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Lykke.Service.HftInternalService.Controllers
 {
@@ -95,7 +95,7 @@ namespace Lykke.Service.HftInternalService.Controllers
                 return BadRequest();
 
             var keys = await _apiKeyService.GetApiKeysAsync(clientId);
-            return Ok(keys.Select(key => new ApiKeyDto { Key = key.Id.ToString(), Wallet = key.WalletId ?? key.ClientId }));   // remove ClientId usage here after DB migration
+            return Ok(keys.Select(key => new ApiKeyDto { Key = key.Id.ToString(), Wallet = key.WalletId}));
         }
 
         /// <summary>

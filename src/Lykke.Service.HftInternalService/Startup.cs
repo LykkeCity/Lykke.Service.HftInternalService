@@ -20,6 +20,9 @@ namespace Lykke.Service.HftInternalService
 {
     public class Startup
     {
+        private const string ApiVersion = "v1";
+        private const string ApiTitle = "HftInternalService API";
+
         public IHostingEnvironment Environment { get; }
         public IContainer ApplicationContainer { get; private set; }
         public IConfigurationRoot Configuration { get; }
@@ -47,7 +50,7 @@ namespace Lykke.Service.HftInternalService
 
                 services.AddSwaggerGen(options =>
                 {
-                    options.DefaultLykkeConfiguration("v1", "HftInternalService API");
+                    options.DefaultLykkeConfiguration(ApiVersion, ApiTitle);
                 });
 
                 var builder = new ContainerBuilder();
@@ -55,6 +58,7 @@ namespace Lykke.Service.HftInternalService
                 Log = CreateLogWithSlack(services, appSettings);
 
                 builder.RegisterModule(new ServiceModule(appSettings, Log));
+                builder.RegisterModule(new ClientsModule(appSettings));
                 builder.Populate(services);
                 ApplicationContainer = builder.Build();
 
@@ -76,11 +80,15 @@ namespace Lykke.Service.HftInternalService
                     app.UseDeveloperExceptionPage();
                 }
 
-                app.UseLykkeMiddleware("HftInternalService", ex => new { Message = "Technical problem" });
+                app.UseLykkeMiddleware(Constants.ComponentName, ex => new { Message = "Technical problem" });
 
                 app.UseMvc();
                 app.UseSwagger();
-                app.UseSwaggerUi();
+                app.UseSwaggerUI(x =>
+                {
+                    x.RoutePrefix = "swagger/ui";
+                    x.SwaggerEndpoint("/swagger/v1/swagger.json", ApiVersion);
+                });
                 app.UseStaticFiles();
 
                 appLifetime.ApplicationStarted.Register(() => StartApplication().Wait());
@@ -88,7 +96,7 @@ namespace Lykke.Service.HftInternalService
             }
             catch (Exception ex)
             {
-                Log?.WriteFatalErrorAsync(nameof(Startup), nameof(ConfigureServices), "", ex);
+                Log?.WriteFatalErrorAsync(nameof(Startup), nameof(Configure), "", ex);
                 throw;
             }
         }
@@ -97,7 +105,7 @@ namespace Lykke.Service.HftInternalService
         {
             try
             {
-                // NOTE: Service not yet recieve and process requests here
+                // NOTE: Service not yet receive and process requests here
 
                 await Log.WriteMonitorAsync("", "", "Started");
             }
@@ -112,7 +120,7 @@ namespace Lykke.Service.HftInternalService
         {
             try
             {
-                // NOTE: Service can't recieve and process requests here, so you can destroy all resources
+                // NOTE: Service can't receive and process requests here, so you can destroy all resources
 
                 if (Log != null)
                 {
@@ -149,7 +157,7 @@ namespace Lykke.Service.HftInternalService
             var dbLogConnectionStringManager = settings.Nested(x => x.HftInternalService.Db.LogsConnString);
             var dbLogConnectionString = dbLogConnectionStringManager.CurrentValue;
 
-            // Creating azure storage logger, which logs own messages to concole log
+            // Creating azure storage logger, which logs own messages to console log
             if (!string.IsNullOrEmpty(dbLogConnectionString) && !(dbLogConnectionString.StartsWith("${") && dbLogConnectionString.EndsWith("}")))
             {
                 var persistenceManager = new LykkeLogToAzureStoragePersistenceManager(
