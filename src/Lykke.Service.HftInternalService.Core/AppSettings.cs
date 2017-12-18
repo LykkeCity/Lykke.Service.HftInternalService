@@ -11,11 +11,11 @@
     public class HftInternalServiceSettings
     {
         public DbSettings Db { get; set; }
+        public RabbitMqSettings ApiKeysFeed { get; set; }
     }
 
     public class HighFrequencyTradingSettings
     {
-        public CacheSettings CacheSettings { get; set; }
         public MongoSettings MongoSettings { get; set; }
     }
 
@@ -29,20 +29,10 @@
         public string ConnectionString { get; set; }
     }
 
-    public class CacheSettings
+    public class RabbitMqSettings
     {
-        public string RedisConfiguration { get; set; }
-
-        public string ApiKeyCacheInstance { get; set; }
-        public string ApiKeyCacheKeyPattern { get; set; }
-    }
-
-    public static class CacheSettingsExt
-    {
-        public static string GetApiKey(this CacheSettings settings, string apiKey)
-        {
-            return string.Format(settings.ApiKeyCacheKeyPattern, apiKey);
-        }
+        public string ConnectionString { get; set; }
+        public string ExchangeName { get; set; }
     }
 
     public class SlackNotificationsSettings

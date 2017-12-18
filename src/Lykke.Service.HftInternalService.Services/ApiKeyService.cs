@@ -1,40 +1,39 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Lykke.Service.HftInternalService.Core;
+using JetBrains.Annotations;
+using Lykke.Service.HftInternalService.Contracts.Events;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
-using Microsoft.Extensions.Caching.Distributed;
+using ApiKey = Lykke.Service.HftInternalService.Core.Domain.ApiKey;
 
 namespace Lykke.Service.HftInternalService.Services
 {
     public class ApiKeyService : IApiKeyService
     {
-        private readonly IDistributedCache _distributedCache;
-        private readonly CacheSettings _cacheSettings;
+        private readonly IApiKeyPublisher _apiKeyPublisher;
         private readonly IRepository<ApiKey> _apiKeyRepository;
 
-        public ApiKeyService(IDistributedCache distributedCache, CacheSettings cacheSettings, IRepository<ApiKey> orderStateRepository)
+        public ApiKeyService([NotNull] IRepository<ApiKey> orderStateRepository, [NotNull] IApiKeyPublisher apiKeyPublisher)
         {
-            _cacheSettings = cacheSettings ?? throw new ArgumentNullException(nameof(cacheSettings));
-            _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
+            _apiKeyPublisher = apiKeyPublisher ?? throw new ArgumentNullException(nameof(apiKeyPublisher));
             _apiKeyRepository = orderStateRepository ?? throw new ArgumentNullException(nameof(orderStateRepository));
         }
 
         public async Task<ApiKey> GenerateApiKeyAsync(string clientId, string walletId)
         {
             var apiKey = Guid.NewGuid();
-            var apiKeyAsString = apiKey.ToString();
-            await _distributedCache.SetStringAsync(GetCacheKey(apiKeyAsString), walletId);
+
             var existedApiKey = await _apiKeyRepository.Get(x => x.WalletId == walletId && x.ValidTill == null);
             if (existedApiKey != null)
             {
-                await _distributedCache.RemoveAsync(GetCacheKey(existedApiKey.Id.ToString()));
                 existedApiKey.ValidTill = DateTime.UtcNow;
                 await _apiKeyRepository.Update(existedApiKey);
+                await PublishNotification(existedApiKey);
             }
             var key = new ApiKey { Id = apiKey, ClientId = clientId, WalletId = walletId };
             await _apiKeyRepository.Add(key);
+            await PublishNotification(key);
 
             return key;
         }
@@ -44,9 +43,9 @@ namespace Lykke.Service.HftInternalService.Services
             var existedApiKey = await _apiKeyRepository.Get(key.Id);
             if (existedApiKey != null)
             {
-                await _distributedCache.RemoveAsync(GetCacheKey(existedApiKey.Id.ToString()));
                 existedApiKey.ValidTill = DateTime.UtcNow;
                 await _apiKeyRepository.Update(existedApiKey);
+                await PublishNotification(existedApiKey);
             }
         }
 
@@ -65,9 +64,10 @@ namespace Lykke.Service.HftInternalService.Services
             return null;
         }
 
-        private string GetCacheKey(string apiKey)
+        private async Task PublishNotification(ApiKey apiKey)
         {
-            return _cacheSettings.GetApiKey(apiKey);
+            var message = new ApiKeyUpdatedMessage { ApiKey = new Contracts.Events.ApiKey { Id = apiKey.Id, WalletId = apiKey.WalletId, Enabled = !apiKey.ValidTill.HasValue } };
+            await _apiKeyPublisher.PublishAsync(message);
         }
     }
 }

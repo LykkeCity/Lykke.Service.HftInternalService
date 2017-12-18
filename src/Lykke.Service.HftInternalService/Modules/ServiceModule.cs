@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Autofac.Core;
+using Common;
 using Common.Log;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
@@ -7,8 +7,6 @@ using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.MongoRepositories;
 using Lykke.Service.HftInternalService.Services;
 using Lykke.SettingsReader;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Redis;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
@@ -38,31 +36,23 @@ namespace Lykke.Service.HftInternalService.Modules
             RegisterApiKeyService(builder);
 
             BindMongoDb(builder);
-            BindRedis(builder);
+            BindRabbitMq(builder);
         }
 
 
-        private void BindRedis(ContainerBuilder builder)
+        private void BindRabbitMq(ContainerBuilder builder)
         {
-            var apiKeysRedisCache = new RedisCache(new RedisCacheOptions
-            {
-                Configuration = _settings.CurrentValue.HighFrequencyTradingService.CacheSettings.RedisConfiguration,
-                InstanceName = _settings.CurrentValue.HighFrequencyTradingService.CacheSettings.ApiKeyCacheInstance
-            });
-            builder.RegisterInstance(apiKeysRedisCache)
-                .As<IDistributedCache>()
-                .Keyed<IDistributedCache>("apiKeys")
-                .SingleInstance();
+            builder.RegisterType<ApiKeyPublisher>()
+                .As<IApiKeyPublisher>()
+                .As<IStartable>()
+                .As<IStopable>()
+                .SingleInstance()
+                .WithParameter(TypedParameter.From(_settings.CurrentValue.HftInternalService.ApiKeysFeed));
         }
 
         private void RegisterApiKeyService(ContainerBuilder builder)
         {
             builder.RegisterType<ApiKeyService>()
-                .WithParameter(TypedParameter.From(_settings.CurrentValue.HighFrequencyTradingService.CacheSettings))
-                .WithParameter(
-                    new ResolvedParameter(
-                        (pi, ctx) => pi.ParameterType == typeof(IDistributedCache),
-                        (pi, ctx) => ctx.ResolveKeyed<IDistributedCache>("apiKeys")))
                 .As<IApiKeyService>()
                 .SingleInstance();
 

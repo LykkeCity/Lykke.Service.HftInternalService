@@ -9,10 +9,12 @@
 
   <ItemGroup>
     <PackageReference Include="Lykke.Common" Version="3.0.2" />
+    <PackageReference Include="Lykke.RabbitMqBroker" Version="4.3.0" />
     <PackageReference Include="Lykke.Service.ClientAccount.Client" Version="1.0.74" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lykke.Service.HftInternalService.Contracts\Lykke.Service.HftInternalService.Contracts.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.Core\Lykke.Service.HftInternalService.Core.csproj" />
   </ItemGroup>
 
