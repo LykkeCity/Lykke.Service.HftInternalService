@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Common;
 using Common.Log;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
@@ -44,6 +45,7 @@ namespace Lykke.Service.HftInternalService.Modules
             builder.RegisterType<ApiKeyPublisher>()
                 .As<IApiKeyPublisher>()
                 .As<IStartable>()
+                .As<IStopable>()
                 .SingleInstance()
                 .WithParameter(TypedParameter.From(_settings.CurrentValue.HftInternalService.ApiKeysFeed));
         }

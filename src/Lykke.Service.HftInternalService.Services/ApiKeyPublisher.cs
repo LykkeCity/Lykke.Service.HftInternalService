@@ -50,7 +50,14 @@ namespace Lykke.Service.HftInternalService.Services
 
         public async Task PublishAsync(ApiKeyUpdatedMessage message)
         {
-            await _publisher.ProduceAsync(message);
+            try
+            {
+                await _publisher.ProduceAsync(message);
+            }
+            catch (Exception exception)
+            {
+                await _log.WriteErrorAsync(nameof(ApiKeyPublisher), nameof(PublishAsync), "Cannot publish message", exception);
+            }
         }
     }
 }
