@@ -54,12 +54,13 @@ namespace Lykke.Service.HftInternalService
                 });
 
                 var builder = new ContainerBuilder();
+                builder.Populate(services);
+
                 var appSettings = Configuration.LoadSettings<AppSettings>();
                 Log = CreateLogWithSlack(services, appSettings);
 
                 builder.RegisterModule(new ServiceModule(appSettings, Log));
                 builder.RegisterModule(new ClientsModule(appSettings));
-                builder.Populate(services);
                 ApplicationContainer = builder.Build();
 
                 return new AutofacServiceProvider(ApplicationContainer);
