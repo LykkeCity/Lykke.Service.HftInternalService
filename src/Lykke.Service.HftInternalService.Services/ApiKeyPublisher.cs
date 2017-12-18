@@ -24,8 +24,11 @@ namespace Lykke.Service.HftInternalService.Services
 
         public void Start()
         {
-            var settings = RabbitMqSubscriptionSettings
-                .CreateForPublisher(_rabbitSettings.ConnectionString, _rabbitSettings.ExchangeName);
+            var settings = new RabbitMqSubscriptionSettings
+            {
+                ConnectionString = _rabbitSettings.ConnectionString,
+                ExchangeName = _rabbitSettings.ExchangeName
+            };
 
             _publisher = new RabbitMqPublisher<ApiKeyUpdatedMessage>(settings)
                 .SetSerializer(new JsonMessageSerializer<ApiKeyUpdatedMessage>())
