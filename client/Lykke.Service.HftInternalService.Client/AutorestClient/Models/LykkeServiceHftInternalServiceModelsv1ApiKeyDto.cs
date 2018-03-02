@@ -9,23 +9,25 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
     using Newtonsoft.Json;
     using System.Linq;
 
-    public partial class RegenerateKeyRequest
+    public partial class LykkeServiceHftInternalServiceModelsv1ApiKeyDto
     {
         /// <summary>
-        /// Initializes a new instance of the RegenerateKeyRequest class.
+        /// Initializes a new instance of the
+        /// LykkeServiceHftInternalServiceModelsv1ApiKeyDto class.
         /// </summary>
-        public RegenerateKeyRequest()
+        public LykkeServiceHftInternalServiceModelsv1ApiKeyDto()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the RegenerateKeyRequest class.
+        /// Initializes a new instance of the
+        /// LykkeServiceHftInternalServiceModelsv1ApiKeyDto class.
         /// </summary>
-        public RegenerateKeyRequest(string clientId = default(string), string walletId = default(string))
+        public LykkeServiceHftInternalServiceModelsv1ApiKeyDto(string key = default(string), string wallet = default(string))
         {
-            ClientId = clientId;
-            WalletId = walletId;
+            Key = key;
+            Wallet = wallet;
             CustomInit();
         }
 
@@ -36,13 +38,13 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "ClientId")]
-        public string ClientId { get; set; }
+        [JsonProperty(PropertyName = "Key")]
+        public string Key { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "WalletId")]
-        public string WalletId { get; set; }
+        [JsonProperty(PropertyName = "Wallet")]
+        public string Wallet { get; set; }
 
     }
 }

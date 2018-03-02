@@ -4,12 +4,13 @@ using System.Net;
 using System.Threading.Tasks;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Services;
-using Lykke.Service.HftInternalService.Models;
+using Lykke.Service.HftInternalService.Models.v1;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Lykke.Service.HftInternalService.Controllers
+namespace Lykke.Service.HftInternalService.Controllers.V1
 {
+    [Obsolete]
     [Route("api/[controller]")]
     public class KeysController : Controller
     {
@@ -29,8 +30,9 @@ namespace Lykke.Service.HftInternalService.Controllers
         /// </summary>
         /// <param name="request">Key creation settings.</param>
         /// <returns>Wallet ID and API key.</returns>
+        [Obsolete]
         [HttpPost]
-        [SwaggerOperation("CreateKey")]
+        [SwaggerOperation("CreateKeyObsolete")]
         [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateKey([FromBody] CreateApiKeyRequest request)
@@ -54,8 +56,9 @@ namespace Lykke.Service.HftInternalService.Controllers
         /// </summary>
         /// <param name="request">Client id and wallet id.</param>
         /// <returns>Wallet ID and API key.</returns>
+        [Obsolete]
         [HttpPost("new")]
-        [SwaggerOperation("RegenerateKey")]
+        [SwaggerOperation("RegenerateKeyObsolete")]
         [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> RegenerateKey([FromBody] RegenerateKeyRequest request)
@@ -85,8 +88,9 @@ namespace Lykke.Service.HftInternalService.Controllers
         /// Get all api keys for a specified client.
         /// </summary>
         /// <param name="clientId"></param>
+        [Obsolete]
         [HttpGet("{clientId}")]
-        [SwaggerOperation("GetKeys")]
+        [SwaggerOperation("GetKeysObsolete")]
         [ProducesResponseType(typeof(ApiKeyDto[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetKeys(string clientId)
@@ -102,8 +106,9 @@ namespace Lykke.Service.HftInternalService.Controllers
         /// Delete specified api-key.
         /// </summary>
         /// <param name="key"></param>
+        [Obsolete]
         [HttpDelete("{key}")]
-        [SwaggerOperation("DeleteKey")]
+        [SwaggerOperation("DeleteKeyObsolete")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

@@ -11,20 +11,22 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
     using System.Collections.Generic;
     using System.Linq;
 
-    public partial class IsAliveResponse
+    public partial class LykkeServiceHftInternalServiceModelsIsAliveResponse
     {
         /// <summary>
-        /// Initializes a new instance of the IsAliveResponse class.
+        /// Initializes a new instance of the
+        /// LykkeServiceHftInternalServiceModelsIsAliveResponse class.
         /// </summary>
-        public IsAliveResponse()
+        public LykkeServiceHftInternalServiceModelsIsAliveResponse()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the IsAliveResponse class.
+        /// Initializes a new instance of the
+        /// LykkeServiceHftInternalServiceModelsIsAliveResponse class.
         /// </summary>
-        public IsAliveResponse(bool isDebug, string name = default(string), string version = default(string), string env = default(string), IList<IssueIndicator> issueIndicators = default(IList<IssueIndicator>))
+        public LykkeServiceHftInternalServiceModelsIsAliveResponse(bool isDebug, string name = default(string), string version = default(string), string env = default(string), IList<LykkeServiceHftInternalServiceModelsIsAliveResponseIssueIndicator> issueIndicators = default(IList<LykkeServiceHftInternalServiceModelsIsAliveResponseIssueIndicator>))
         {
             Name = name;
             Version = version;
@@ -62,7 +64,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "IssueIndicators")]
-        public IList<IssueIndicator> IssueIndicators { get; set; }
+        public IList<LykkeServiceHftInternalServiceModelsIsAliveResponseIssueIndicator> IssueIndicators { get; set; }
 
         /// <summary>
         /// Validate the object.

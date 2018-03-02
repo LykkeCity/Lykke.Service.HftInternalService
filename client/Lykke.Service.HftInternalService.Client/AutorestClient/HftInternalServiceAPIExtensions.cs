@@ -46,6 +46,38 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             }
 
             /// <summary>
+            /// Get all api keys for a specified client.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='clientId'>
+            /// </param>
+            public static IList<LykkeServiceHftInternalServiceModelsV2ApiKeyDto> GetKeys(this IHftInternalServiceAPI operations, string clientId = default(string))
+            {
+                return operations.GetKeysAsync(clientId).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Get all api keys for a specified client.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='clientId'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IList<LykkeServiceHftInternalServiceModelsV2ApiKeyDto>> GetKeysAsync(this IHftInternalServiceAPI operations, string clientId = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetKeysWithHttpMessagesAsync(clientId, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
             /// Create api-key for a specified client.
             /// </summary>
             /// <param name='operations'>
@@ -54,7 +86,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             /// <param name='request'>
             /// Key creation settings.
             /// </param>
-            public static ApiKeyDto CreateKey(this IHftInternalServiceAPI operations, CreateApiKeyRequest request = default(CreateApiKeyRequest))
+            public static LykkeServiceHftInternalServiceModelsV2ApiKeyDto CreateKey(this IHftInternalServiceAPI operations, LykkeServiceHftInternalServiceModelsV2CreateApiKeyRequest request = default(LykkeServiceHftInternalServiceModelsV2CreateApiKeyRequest))
             {
                 return operations.CreateKeyAsync(request).GetAwaiter().GetResult();
             }
@@ -71,7 +103,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<ApiKeyDto> CreateKeyAsync(this IHftInternalServiceAPI operations, CreateApiKeyRequest request = default(CreateApiKeyRequest), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<LykkeServiceHftInternalServiceModelsV2ApiKeyDto> CreateKeyAsync(this IHftInternalServiceAPI operations, LykkeServiceHftInternalServiceModelsV2CreateApiKeyRequest request = default(LykkeServiceHftInternalServiceModelsV2CreateApiKeyRequest), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.CreateKeyWithHttpMessagesAsync(request, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -88,7 +120,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             /// <param name='request'>
             /// Client id and wallet id.
             /// </param>
-            public static ApiKeyDto RegenerateKey(this IHftInternalServiceAPI operations, RegenerateKeyRequest request = default(RegenerateKeyRequest))
+            public static LykkeServiceHftInternalServiceModelsV2ApiKeyDto RegenerateKey(this IHftInternalServiceAPI operations, LykkeServiceHftInternalServiceModelsV2RegenerateKeyRequest request = default(LykkeServiceHftInternalServiceModelsV2RegenerateKeyRequest))
             {
                 return operations.RegenerateKeyAsync(request).GetAwaiter().GetResult();
             }
@@ -105,7 +137,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<ApiKeyDto> RegenerateKeyAsync(this IHftInternalServiceAPI operations, RegenerateKeyRequest request = default(RegenerateKeyRequest), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<LykkeServiceHftInternalServiceModelsV2ApiKeyDto> RegenerateKeyAsync(this IHftInternalServiceAPI operations, LykkeServiceHftInternalServiceModelsV2RegenerateKeyRequest request = default(LykkeServiceHftInternalServiceModelsV2RegenerateKeyRequest), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.RegenerateKeyWithHttpMessagesAsync(request, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -114,32 +146,32 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             }
 
             /// <summary>
-            /// Get all api keys for a specified client.
+            /// Get api key.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='clientId'>
+            /// <param name='apiKey'>
             /// </param>
-            public static IList<ApiKeyDto> GetKeys(this IHftInternalServiceAPI operations, string clientId)
+            public static IList<LykkeServiceHftInternalServiceModelsV2ApiKeyDto> GetKey(this IHftInternalServiceAPI operations, string apiKey)
             {
-                return operations.GetKeysAsync(clientId).GetAwaiter().GetResult();
+                return operations.GetKeyAsync(apiKey).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Get all api keys for a specified client.
+            /// Get api key.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='clientId'>
+            /// <param name='apiKey'>
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IList<ApiKeyDto>> GetKeysAsync(this IHftInternalServiceAPI operations, string clientId, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IList<LykkeServiceHftInternalServiceModelsV2ApiKeyDto>> GetKeyAsync(this IHftInternalServiceAPI operations, string apiKey, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetKeysWithHttpMessagesAsync(clientId, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.GetKeyWithHttpMessagesAsync(apiKey, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
@@ -172,6 +204,143 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
             public static async Task DeleteKeyAsync(this IHftInternalServiceAPI operations, string key, CancellationToken cancellationToken = default(CancellationToken))
             {
                 (await operations.DeleteKeyWithHttpMessagesAsync(key, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <summary>
+            /// Create api-key for a specified client.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='request'>
+            /// Key creation settings.
+            /// </param>
+            [System.Obsolete()]
+            public static LykkeServiceHftInternalServiceModelsv1ApiKeyDto CreateKeyObsolete(this IHftInternalServiceAPI operations, LykkeServiceHftInternalServiceModelsv1CreateApiKeyRequest request = default(LykkeServiceHftInternalServiceModelsv1CreateApiKeyRequest))
+            {
+                return operations.CreateKeyObsoleteAsync(request).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Create api-key for a specified client.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='request'>
+            /// Key creation settings.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            [System.Obsolete()]
+            public static async Task<LykkeServiceHftInternalServiceModelsv1ApiKeyDto> CreateKeyObsoleteAsync(this IHftInternalServiceAPI operations, LykkeServiceHftInternalServiceModelsv1CreateApiKeyRequest request = default(LykkeServiceHftInternalServiceModelsv1CreateApiKeyRequest), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.CreateKeyObsoleteWithHttpMessagesAsync(request, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Create new api-key for existing wallet.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='request'>
+            /// Client id and wallet id.
+            /// </param>
+            [System.Obsolete()]
+            public static LykkeServiceHftInternalServiceModelsv1ApiKeyDto RegenerateKeyObsolete(this IHftInternalServiceAPI operations, LykkeServiceHftInternalServiceModelsv1RegenerateKeyRequest request = default(LykkeServiceHftInternalServiceModelsv1RegenerateKeyRequest))
+            {
+                return operations.RegenerateKeyObsoleteAsync(request).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Create new api-key for existing wallet.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='request'>
+            /// Client id and wallet id.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            [System.Obsolete()]
+            public static async Task<LykkeServiceHftInternalServiceModelsv1ApiKeyDto> RegenerateKeyObsoleteAsync(this IHftInternalServiceAPI operations, LykkeServiceHftInternalServiceModelsv1RegenerateKeyRequest request = default(LykkeServiceHftInternalServiceModelsv1RegenerateKeyRequest), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.RegenerateKeyObsoleteWithHttpMessagesAsync(request, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Get all api keys for a specified client.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='clientId'>
+            /// </param>
+            [System.Obsolete()]
+            public static IList<LykkeServiceHftInternalServiceModelsv1ApiKeyDto> GetKeysObsolete(this IHftInternalServiceAPI operations, string clientId)
+            {
+                return operations.GetKeysObsoleteAsync(clientId).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Get all api keys for a specified client.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='clientId'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            [System.Obsolete()]
+            public static async Task<IList<LykkeServiceHftInternalServiceModelsv1ApiKeyDto>> GetKeysObsoleteAsync(this IHftInternalServiceAPI operations, string clientId, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetKeysObsoleteWithHttpMessagesAsync(clientId, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Delete specified api-key.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='key'>
+            /// </param>
+            [System.Obsolete()]
+            public static void DeleteKeyObsolete(this IHftInternalServiceAPI operations, string key)
+            {
+                operations.DeleteKeyObsoleteAsync(key).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Delete specified api-key.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='key'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            [System.Obsolete()]
+            public static async Task DeleteKeyObsoleteAsync(this IHftInternalServiceAPI operations, string key, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.DeleteKeyObsoleteWithHttpMessagesAsync(key, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
     }

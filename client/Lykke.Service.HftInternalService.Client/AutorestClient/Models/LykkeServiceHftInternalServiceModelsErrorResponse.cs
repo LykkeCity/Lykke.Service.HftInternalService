@@ -11,20 +11,22 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
     using System.Collections.Generic;
     using System.Linq;
 
-    public partial class ErrorResponse
+    public partial class LykkeServiceHftInternalServiceModelsErrorResponse
     {
         /// <summary>
-        /// Initializes a new instance of the ErrorResponse class.
+        /// Initializes a new instance of the
+        /// LykkeServiceHftInternalServiceModelsErrorResponse class.
         /// </summary>
-        public ErrorResponse()
+        public LykkeServiceHftInternalServiceModelsErrorResponse()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the ErrorResponse class.
+        /// Initializes a new instance of the
+        /// LykkeServiceHftInternalServiceModelsErrorResponse class.
         /// </summary>
-        public ErrorResponse(string errorMessage = default(string), IDictionary<string, IList<string>> modelErrors = default(IDictionary<string, IList<string>>))
+        public LykkeServiceHftInternalServiceModelsErrorResponse(string errorMessage = default(string), IDictionary<string, IList<string>> modelErrors = default(IDictionary<string, IList<string>>))
         {
             ErrorMessage = errorMessage;
             ModelErrors = modelErrors;

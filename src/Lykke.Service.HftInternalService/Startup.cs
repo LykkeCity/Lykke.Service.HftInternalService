@@ -52,6 +52,7 @@ namespace Lykke.Service.HftInternalService
                 services.AddSwaggerGen(options =>
                 {
                     options.DefaultLykkeConfiguration(ApiVersion, ApiTitle);
+                    options.CustomSchemaIds(x => x.FullName);
                 });
 
                 var builder = new ContainerBuilder();
@@ -63,6 +64,7 @@ namespace Lykke.Service.HftInternalService
                 builder.RegisterModule(new ServiceModule(appSettings, Log));
                 builder.RegisterModule(new ClientsModule(appSettings));
                 builder.RegisterModule(new CqrsModule(appSettings.Nested(x => x.HftInternalService), Log));
+                builder.RegisterModule(new AutoMapperModule());
                 ApplicationContainer = builder.Build();
 
                 return new AutofacServiceProvider(ApplicationContainer);
