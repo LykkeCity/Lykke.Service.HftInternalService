@@ -34,7 +34,6 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
             {
                 existedApiKey.ValidTill = DateTime.UtcNow;
                 await _apiKeyRepository.Update(existedApiKey);
-                _chaosKitty.Meow("repository unavailable");
 
                 eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = existedApiKey.Id.ToString(), WalletId = existedApiKey.WalletId, Enabled = false });
             }
@@ -48,9 +47,9 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
             return CommandHandlingResult.Ok();
         }
 
-        public async Task<CommandHandlingResult> Handle(Commands.DeleteApiKeyCommand command, IEventPublisher eventPublisher)
+        public async Task<CommandHandlingResult> Handle(Commands.DisableApiKeyCommand command, IEventPublisher eventPublisher)
         {
-            _log.WriteInfo(nameof(Commands.DeleteApiKeyCommand), command, "");
+            _log.WriteInfo(nameof(Commands.DisableApiKeyCommand), command, "");
 
             var existedApiKey = await _apiKeyRepository.Get(Guid.Parse(command.ApiKey));
             if (existedApiKey != null)

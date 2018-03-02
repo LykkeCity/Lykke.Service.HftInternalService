@@ -3,7 +3,7 @@
 namespace Lykke.Service.HftInternalService.Services.Commands
 {
     [MessagePackObject(keyAsPropertyName: true)]
-    public class DeleteApiKeyCommand
+    public class DisableApiKeyCommand
     {
         public string ApiKey { get; set; }
     }

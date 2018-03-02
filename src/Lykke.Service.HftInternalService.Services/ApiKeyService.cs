@@ -36,7 +36,7 @@ namespace Lykke.Service.HftInternalService.Services
         public Task DeleteApiKeyAsync(ApiKey key)
         {
             _cqrsEngine.SendCommand(
-                new DeleteApiKeyCommand { ApiKey = key.Id.ToString() },
+                new DisableApiKeyCommand { ApiKey = key.Id.ToString() },
                 "api-key", "api-key");
 
             return Task.CompletedTask;

@@ -81,7 +81,7 @@ namespace Lykke.Service.HftInternalService.Modules
                     .FailedCommandRetryDelay(defaultRetryDelay)
                     .ListeningCommands(
                             typeof(CreateApiKeyCommand),
-                            typeof(DeleteApiKeyCommand))
+                            typeof(DisableApiKeyCommand))
                         .On(defaultRoute)
                     .PublishingEvents(
                             typeof(ApiKeyUpdatedEvent))
@@ -91,7 +91,7 @@ namespace Lykke.Service.HftInternalService.Modules
                 Register.DefaultRouting
                     .PublishingCommands(
                             typeof(CreateApiKeyCommand),
-                            typeof(DeleteApiKeyCommand))
+                            typeof(DisableApiKeyCommand))
                         .To("api-key").With(defaultPipeline)
                 );
             })
