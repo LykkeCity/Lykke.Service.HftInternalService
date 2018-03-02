@@ -6,6 +6,7 @@ using AzureStorage.Tables;
 using Common.Log;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
+using Lykke.Cqrs;
 using Lykke.Logs;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Modules;
@@ -61,6 +62,7 @@ namespace Lykke.Service.HftInternalService
 
                 builder.RegisterModule(new ServiceModule(appSettings, Log));
                 builder.RegisterModule(new ClientsModule(appSettings));
+                builder.RegisterModule(new CqrsModule(appSettings.Nested(x => x.HftInternalService), Log));
                 ApplicationContainer = builder.Build();
 
                 return new AutofacServiceProvider(ApplicationContainer);
@@ -106,7 +108,7 @@ namespace Lykke.Service.HftInternalService
         {
             try
             {
-                // NOTE: Service not yet receive and process requests here
+                var cqrs = ApplicationContainer.Resolve<ICqrsEngine>(); // bootstrap
 
                 await Log.WriteMonitorAsync("", "", "Started");
             }

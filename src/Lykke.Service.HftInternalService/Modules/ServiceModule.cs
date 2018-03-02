@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Common;
 using Common.Log;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
@@ -36,18 +35,6 @@ namespace Lykke.Service.HftInternalService.Modules
             RegisterApiKeyService(builder);
 
             BindMongoDb(builder);
-            BindRabbitMq(builder);
-        }
-
-
-        private void BindRabbitMq(ContainerBuilder builder)
-        {
-            builder.RegisterType<ApiKeyPublisher>()
-                .As<IApiKeyPublisher>()
-                .As<IStartable>()
-                .As<IStopable>()
-                .SingleInstance()
-                .WithParameter(TypedParameter.From(_settings.CurrentValue.HftInternalService.ApiKeysFeed));
         }
 
         private void RegisterApiKeyService(ContainerBuilder builder)
