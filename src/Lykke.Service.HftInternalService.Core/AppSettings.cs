@@ -29,6 +29,7 @@ namespace Lykke.Service.HftInternalService.Core
 
     public class DbSettings
     {
+        [AzureTableCheck]
         public string LogsConnString { get; set; }
     }
 
