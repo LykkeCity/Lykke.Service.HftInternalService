@@ -8,11 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lykke.Common" Version="3.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Lykke.Service.HftInternalService.Contracts\Lykke.Service.HftInternalService.Contracts.csproj" />
+    <PackageReference Include="Lykke.Common" Version="4.5.0" />
+    <PackageReference Include="Lykke.SettingsReader" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

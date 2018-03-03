@@ -9,20 +9,24 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient.Models
     using Newtonsoft.Json;
     using System.Linq;
 
-    public partial class IssueIndicator
+    public partial class LykkeServiceHftInternalServiceModelsIsAliveResponseIssueIndicator
     {
         /// <summary>
-        /// Initializes a new instance of the IssueIndicator class.
+        /// Initializes a new instance of the
+        /// LykkeServiceHftInternalServiceModelsIsAliveResponseIssueIndicator
+        /// class.
         /// </summary>
-        public IssueIndicator()
+        public LykkeServiceHftInternalServiceModelsIsAliveResponseIssueIndicator()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the IssueIndicator class.
+        /// Initializes a new instance of the
+        /// LykkeServiceHftInternalServiceModelsIsAliveResponseIssueIndicator
+        /// class.
         /// </summary>
-        public IssueIndicator(string type = default(string), string value = default(string))
+        public LykkeServiceHftInternalServiceModelsIsAliveResponseIssueIndicator(string type = default(string), string value = default(string))
         {
             Type = type;
             Value = value;

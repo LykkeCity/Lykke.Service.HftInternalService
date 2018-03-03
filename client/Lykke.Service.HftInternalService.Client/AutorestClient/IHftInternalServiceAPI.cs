@@ -46,6 +46,19 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         Task<HttpOperationResponse<object>> IsAliveWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Get all api keys for a specified client.
+        /// </summary>
+        /// <param name='clientId'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<IList<LykkeServiceHftInternalServiceModelsV2ApiKeyDto>>> GetKeysWithHttpMessagesAsync(string clientId = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Create api-key for a specified client.
         /// </summary>
         /// <param name='request'>
@@ -57,7 +70,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ApiKeyDto>> CreateKeyWithHttpMessagesAsync(CreateApiKeyRequest request = default(CreateApiKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<LykkeServiceHftInternalServiceModelsV2ApiKeyDto>> CreateKeyWithHttpMessagesAsync(LykkeServiceHftInternalServiceModelsV2CreateApiKeyRequest request = default(LykkeServiceHftInternalServiceModelsV2CreateApiKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create new api-key for existing wallet.
@@ -71,12 +84,12 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ApiKeyDto>> RegenerateKeyWithHttpMessagesAsync(RegenerateKeyRequest request = default(RegenerateKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<LykkeServiceHftInternalServiceModelsV2ApiKeyDto>> RegenerateKeyWithHttpMessagesAsync(LykkeServiceHftInternalServiceModelsV2RegenerateKeyRequest request = default(LykkeServiceHftInternalServiceModelsV2RegenerateKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Get all api keys for a specified client.
+        /// Get api key.
         /// </summary>
-        /// <param name='clientId'>
+        /// <param name='apiKey'>
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -84,7 +97,7 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<IList<ApiKeyDto>>> GetKeysWithHttpMessagesAsync(string clientId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<IList<LykkeServiceHftInternalServiceModelsV2ApiKeyDto>>> GetKeyWithHttpMessagesAsync(string apiKey, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete specified api-key.
@@ -98,6 +111,60 @@ namespace Lykke.Service.HftInternalService.Client.AutorestClient
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse> DeleteKeyWithHttpMessagesAsync(string key, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Create api-key for a specified client.
+        /// </summary>
+        /// <param name='request'>
+        /// Key creation settings.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<LykkeServiceHftInternalServiceModelsv1ApiKeyDto>> CreateKeyObsoleteWithHttpMessagesAsync(LykkeServiceHftInternalServiceModelsv1CreateApiKeyRequest request = default(LykkeServiceHftInternalServiceModelsv1CreateApiKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Create new api-key for existing wallet.
+        /// </summary>
+        /// <param name='request'>
+        /// Client id and wallet id.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<LykkeServiceHftInternalServiceModelsv1ApiKeyDto>> RegenerateKeyObsoleteWithHttpMessagesAsync(LykkeServiceHftInternalServiceModelsv1RegenerateKeyRequest request = default(LykkeServiceHftInternalServiceModelsv1RegenerateKeyRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get all api keys for a specified client.
+        /// </summary>
+        /// <param name='clientId'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<IList<LykkeServiceHftInternalServiceModelsv1ApiKeyDto>>> GetKeysObsoleteWithHttpMessagesAsync(string clientId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Delete specified api-key.
+        /// </summary>
+        /// <param name='key'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> DeleteKeyObsoleteWithHttpMessagesAsync(string key, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

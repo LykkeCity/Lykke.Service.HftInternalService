@@ -1,4 +1,8 @@
-﻿namespace Lykke.Service.HftInternalService.Core
+﻿using System;
+using Lykke.Common.Chaos;
+using Lykke.SettingsReader.Attributes;
+
+namespace Lykke.Service.HftInternalService.Core
 {
     public class AppSettings
     {
@@ -11,7 +15,11 @@
     public class HftInternalServiceSettings
     {
         public DbSettings Db { get; set; }
-        public RabbitMqSettings ApiKeysFeed { get; set; }
+        public string QueuePostfix { get; set; }
+        public TimeSpan RetryDelay { get; set; }
+        public string SagasRabbitMqConnStr { get; set; }
+        [Optional]
+        public ChaosSettings ChaosKitty { get; set; }
     }
 
     public class HighFrequencyTradingSettings
@@ -21,18 +29,13 @@
 
     public class DbSettings
     {
+        [AzureTableCheck]
         public string LogsConnString { get; set; }
     }
 
     public class MongoSettings
     {
         public string ConnectionString { get; set; }
-    }
-
-    public class RabbitMqSettings
-    {
-        public string ConnectionString { get; set; }
-        public string ExchangeName { get; set; }
     }
 
     public class SlackNotificationsSettings

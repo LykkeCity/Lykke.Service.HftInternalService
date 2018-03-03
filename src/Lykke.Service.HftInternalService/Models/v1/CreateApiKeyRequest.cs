@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Lykke.Service.HftInternalService.Models
+namespace Lykke.Service.HftInternalService.Models.v1
 {
     public class CreateApiKeyRequest
     {
