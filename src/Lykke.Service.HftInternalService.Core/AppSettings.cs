@@ -6,6 +6,7 @@ namespace Lykke.Service.HftInternalService.Core
 {
     public class AppSettings
     {
+        public MonitoringServiceClientSettings MonitoringServiceClient { get; set; }
         public HftInternalServiceSettings HftInternalService { get; set; }
         public SlackNotificationsSettings SlackNotifications { get; set; }
         public HighFrequencyTradingSettings HighFrequencyTradingService { get; set; }

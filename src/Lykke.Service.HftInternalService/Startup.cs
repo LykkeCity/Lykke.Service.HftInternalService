@@ -8,6 +8,7 @@ using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
 using Lykke.Cqrs;
 using Lykke.Logs;
+using Lykke.MonitoringServiceApiCaller;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Modules;
 using Lykke.SettingsReader;
@@ -21,6 +22,7 @@ namespace Lykke.Service.HftInternalService
 {
     public class Startup
     {
+        private string _monitoringServiceUrl;
         private const string ApiVersion = "v1";
         private const string ApiTitle = "HftInternalService API";
 
@@ -59,6 +61,7 @@ namespace Lykke.Service.HftInternalService
                 builder.Populate(services);
 
                 var appSettings = Configuration.LoadSettings<AppSettings>();
+                _monitoringServiceUrl = appSettings.CurrentValue.MonitoringServiceClient.MonitoringServiceUrl;
                 Log = CreateLogWithSlack(services, appSettings);
 
                 builder.RegisterModule(new ServiceModule(appSettings, Log));
@@ -111,6 +114,7 @@ namespace Lykke.Service.HftInternalService
             try
             {
                 var cqrs = ApplicationContainer.Resolve<ICqrsEngine>(); // bootstrap
+                await AutoRegistrationInMonitoring.RegisterAsync(Configuration, _monitoringServiceUrl, Log);
 
                 await Log.WriteMonitorAsync("", "", "Started");
             }
