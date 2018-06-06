@@ -1,17 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>Lykke.Service.HftInternalService.Services</AssemblyName>
     <RootNamespace>Lykke.Service.HftInternalService.Services</RootNamespace>
     <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lykke.Common" Version="6.6.0" />
-    <PackageReference Include="Lykke.Cqrs" Version="4.5.0" />
-    <PackageReference Include="Lykke.RabbitMqBroker" Version="7.0.0" />
-    <PackageReference Include="Lykke.Service.ClientAccount.Client" Version="1.3.0" />
+    <PackageReference Include="Lykke.Cqrs" Version="4.6.0" />
+    <PackageReference Include="Lykke.RabbitMqBroker" Version="7.0.1" />
+    <PackageReference Include="Lykke.Service.ClientAccount.Client" Version="1.4.1" />
     <PackageReference Include="MessagePack" Version="1.7.3.4" />
   </ItemGroup>
 
