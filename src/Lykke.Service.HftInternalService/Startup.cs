@@ -94,6 +94,7 @@ namespace Lykke.Service.HftInternalService
                 app.UseSwagger();
                 app.UseSwaggerUI(x =>
                 {
+                    x.DocumentTitle = ApiTitle;
                     x.RoutePrefix = "swagger/ui";
                     x.SwaggerEndpoint("/swagger/v1/swagger.json", ApiVersion);
                 });
@@ -113,7 +114,7 @@ namespace Lykke.Service.HftInternalService
         {
             try
             {
-                var cqrs = ApplicationContainer.Resolve<ICqrsEngine>(); // bootstrap
+                ApplicationContainer.Resolve<ICqrsEngine>(); // bootstrap
                 await AutoRegistrationInMonitoring.RegisterAsync(Configuration, _monitoringServiceUrl, Log);
 
                 await Log.WriteMonitorAsync("", "", "Started");

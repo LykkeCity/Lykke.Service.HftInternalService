@@ -42,10 +42,14 @@ namespace Lykke.Service.HftInternalService.Services
             return Task.CompletedTask;
         }
 
-        public async Task<ApiKey[]> GetApiKeysAsync(string clientId)
+        public Task<ApiKey[]> GetApiKeysAsync(string clientId)
         {
-            var existedApiKeys = _apiKeyRepository.FilterBy(x => x.ClientId == clientId && x.ValidTill == null).ToArray(); // todo: make async calls
-            return existedApiKeys;
+            // todo: make async calls
+            var existedApiKeys = _apiKeyRepository
+                .FilterBy(x => x.ClientId == clientId && x.ValidTill == null)
+                .ToArray(); 
+
+            return Task.FromResult(existedApiKeys);
         }
 
         public async Task<ApiKey> GetApiKeyAsync(string id)
