@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Tests", "4. Tests", "{8F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Service.HftInternalService", "src\Lykke.Service.HftInternalService\Lykke.Service.HftInternalService.csproj", "{E414FDB9-FEEA-4CD0-9BBA-D1541601DF29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Service.HFT.MongoRepositories", "src\Lykke.Service.HftInternalService.MongoRepositories\Lykke.Service.HFT.MongoRepositories.csproj", "{10520F60-B491-4A53-BBC2-6E38B98694E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Service.HFTInternalService.MongoRepositories", "src\Lykke.Service.HftInternalService.MongoRepositories\Lykke.Service.HFTInternalService.MongoRepositories.csproj", "{10520F60-B491-4A53-BBC2-6E38B98694E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

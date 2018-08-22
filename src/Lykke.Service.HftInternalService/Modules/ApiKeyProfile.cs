@@ -5,9 +5,11 @@ using Lykke.Service.HftInternalService.Models.V2;
 
 namespace Lykke.Service.HftInternalService.Modules
 {
+    /// <inheritdoc />
     [UsedImplicitly]
     public class ApiKeyProfile : Profile
     {
+        /// <inheritdoc />
         public ApiKeyProfile()
         {
             CreateMap<ApiKey, ApiKeyDto>()
