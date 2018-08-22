@@ -10,14 +10,20 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Lykke.Service.HftInternalService.Controllers.V1
 {
-    [Obsolete]
+    /// <summary>
+    /// Api keys controller - Version 1
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
+    [Obsolete("Use V2 version")]
     [Route("api/[controller]")]
+    [ApiController]
     public class KeysController : Controller
     {
         private readonly IWalletService _walletService;
         private readonly IApiKeyService _apiKeyService;
         private readonly IClientAccountService _clientAccountService;
 
+        /// <inheritdoc />
         public KeysController(IWalletService walletService, IApiKeyService apiKeyService, IClientAccountService clientAccountService)
         {
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
@@ -30,7 +36,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
         /// </summary>
         /// <param name="request">Key creation settings.</param>
         /// <returns>Wallet ID and API key.</returns>
-        [Obsolete]
+        [Obsolete("Use V2 version")]
         [HttpPost]
         [SwaggerOperation("CreateKeyObsolete")]
         [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
@@ -56,7 +62,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
         /// </summary>
         /// <param name="request">Client id and wallet id.</param>
         /// <returns>Wallet ID and API key.</returns>
-        [Obsolete]
+        [Obsolete("Use V2 version")]
         [HttpPost("new")]
         [SwaggerOperation("RegenerateKeyObsolete")]
         [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
@@ -88,7 +94,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
         /// Get all api keys for a specified client.
         /// </summary>
         /// <param name="clientId"></param>
-        [Obsolete]
+        [Obsolete("Use V2 version")]
         [HttpGet("{clientId}")]
         [SwaggerOperation("GetKeysObsolete")]
         [ProducesResponseType(typeof(ApiKeyDto[]), (int)HttpStatusCode.OK)]
@@ -106,7 +112,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
         /// Delete specified api-key.
         /// </summary>
         /// <param name="key"></param>
-        [Obsolete]
+        [Obsolete("Use V2 version")]
         [HttpDelete("{key}")]
         [SwaggerOperation("DeleteKeyObsolete")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]

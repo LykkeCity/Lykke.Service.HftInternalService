@@ -54,7 +54,7 @@ namespace Lykke.Service.HftInternalService.Services
 
         public async Task<ApiKey> GetApiKeyAsync(string id)
         {
-            if (Guid.TryParse(id, out Guid key))
+            if (Guid.TryParse(id, out var key))
             {
                 return await _apiKeyRepository.Get(key);
             }

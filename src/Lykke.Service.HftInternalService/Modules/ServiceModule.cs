@@ -1,37 +1,28 @@
 ﻿using Autofac;
-using Common.Log;
+using JetBrains.Annotations;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
-using Lykke.Service.HftInternalService.MongoRepositories;
 using Lykke.Service.HftInternalService.Services;
+using Lykke.Service.HFTInternalService.MongoRepositories;
 using Lykke.SettingsReader;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 namespace Lykke.Service.HftInternalService.Modules
 {
-    public class ServiceModule : Module
+    [UsedImplicitly]
+    internal sealed class ServiceModule : Module
     {
         private readonly IReloadingManager<AppSettings> _settings;
-        private readonly ILog _log;
 
-        public ServiceModule(IReloadingManager<AppSettings> settings, ILog log)
+        public ServiceModule(IReloadingManager<AppSettings> settings)
         {
             _settings = settings;
-            _log = log;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterInstance(_log)
-                .As<ILog>()
-                .SingleInstance();
-
-            builder.RegisterType<HealthService>()
-                .As<IHealthService>()
-                .SingleInstance();
-
             RegisterApiKeyService(builder);
 
             BindMongoDb(builder);

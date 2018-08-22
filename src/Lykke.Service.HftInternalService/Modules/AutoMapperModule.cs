@@ -2,10 +2,12 @@
 using System.Linq;
 using Autofac;
 using AutoMapper;
+using JetBrains.Annotations;
 
 namespace Lykke.Service.HftInternalService.Modules
 {
-    public class AutoMapperModule : Module
+    [UsedImplicitly]
+    internal sealed class AutoMapperModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

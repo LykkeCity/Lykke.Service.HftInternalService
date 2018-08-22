@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using Autofac;
-using Common.Log;
+using JetBrains.Annotations;
 using Lykke.Common.Chaos;
+using Lykke.Common.Log;
 using Lykke.Cqrs;
 using Lykke.Cqrs.Configuration;
 using Lykke.Messaging;
 using Lykke.Messaging.RabbitMq;
+using Lykke.Messaging.Serialization;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Services.Commands;
 using Lykke.Service.HftInternalService.Services.Events;
@@ -14,15 +16,14 @@ using Lykke.SettingsReader;
 
 namespace Lykke.Service.HftInternalService.Modules
 {
-    public class CqrsModule : Module
+    [UsedImplicitly]
+    internal sealed class CqrsModule : Module
     {
         private readonly HftInternalServiceSettings _settings;
-        private readonly ILog _log;
 
-        public CqrsModule(IReloadingManager<HftInternalServiceSettings> settingsManager, ILog log)
+        public CqrsModule(IReloadingManager<AppSettings> settingsManager)
         {
-            _settings = settingsManager.CurrentValue;
-            _log = log;
+            _settings = settingsManager.CurrentValue.HftInternalService;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -43,67 +44,72 @@ namespace Lykke.Service.HftInternalService.Modules
                     .SingleInstance();
             }
 
-            Messaging.Serialization.MessagePackSerializerFactory.Defaults.FormatterResolver = MessagePack.Resolvers.ContractlessStandardResolver.Instance;
+            MessagePackSerializerFactory.Defaults.FormatterResolver =
+                MessagePack.Resolvers.ContractlessStandardResolver.Instance;
 
-            builder.Register(context => new AutofacDependencyResolver(context)).As<IDependencyResolver>().SingleInstance();
+            builder
+                .Register(context => new AutofacDependencyResolver(context))
+                .As<IDependencyResolver>()
+                .SingleInstance();
 
-            var rabbitMqSettings = new RabbitMQ.Client.ConnectionFactory { Uri = _settings.SagasRabbitMqConnStr };
-#if DEBUG
-            var virtualHost = "/debug";
-            var messagingEngine = new MessagingEngine(_log,
-                new TransportResolver(new Dictionary<string, TransportInfo>
-                {
-                    {"RabbitMq", new TransportInfo(rabbitMqSettings.Endpoint + virtualHost, rabbitMqSettings.UserName, rabbitMqSettings.Password, "None", "RabbitMq")}
-                }),
-                new RabbitMqTransportFactory());
-#else
-            var messagingEngine = new MessagingEngine(_log,
-                new TransportResolver(new Dictionary<string, TransportInfo>
-                {
-                    {"RabbitMq", new TransportInfo(rabbitMqSettings.Endpoint.ToString(), rabbitMqSettings.UserName, rabbitMqSettings.Password, "None", "RabbitMq")}
-                }),
-                new RabbitMqTransportFactory());
-#endif
-
-            var defaultRetryDelay = (long)_settings.RetryDelay.TotalMilliseconds;
+            var rabbitMqSettings = new RabbitMQ.Client.ConnectionFactory {Uri = _settings.SagasRabbitMqConnStr};
 
             builder.RegisterType<ApiKeyHandler>();
 
             builder.Register(ctx =>
             {
+                var logFactory = ctx.Resolve<ILogFactory>();
+#if DEBUG
+                var broker = rabbitMqSettings.Endpoint + "/debug";
+#else
+                var broker = rabbitMqSettings.Endpoint.ToString();
+#endif
+                var messagingEngine = new MessagingEngine(logFactory,
+                    new TransportResolver(new Dictionary<string, TransportInfo>
+                    {
+                        {
+                            "RabbitMq",
+                            new TransportInfo(broker, rabbitMqSettings.UserName, rabbitMqSettings.Password, "None",
+                                "RabbitMq")
+                        }
+                    }),
+                    new RabbitMqTransportFactory(logFactory));
+
+                var defaultRetryDelay = (long) _settings.RetryDelay.TotalMilliseconds;
+
                 const string defaultPipeline = "commands";
                 const string defaultRoute = "self";
 
-                return new CqrsEngine(_log,
+                return new CqrsEngine(logFactory,
                     ctx.Resolve<IDependencyResolver>(),
                     messagingEngine,
                     new DefaultEndpointProvider(),
                     true,
                     Register.DefaultEndpointResolver(new RabbitMqConventionEndpointResolver(
                         "RabbitMq",
-                        "messagepack",
+                        SerializationFormat.MessagePack,
                         environment: "lykke",
                         exclusiveQueuePostfix: _settings.QueuePostfix)),
 
-                Register.BoundedContext("api-key")
-                    .FailedCommandRetryDelay(defaultRetryDelay)
-                    .ListeningCommands(
+                    Register.BoundedContext("api-key")
+                        .FailedCommandRetryDelay(defaultRetryDelay)
+                        .ListeningCommands(
                             typeof(CreateApiKeyCommand),
                             typeof(DisableApiKeyCommand))
                         .On(defaultRoute)
-                    .PublishingEvents(
+                        .PublishingEvents(
                             typeof(ApiKeyUpdatedEvent))
                         .With(defaultPipeline)
-                    .WithCommandsHandler<ApiKeyHandler>(),
+                        .WithCommandsHandler<ApiKeyHandler>(),
 
-                Register.DefaultRouting
-                    .PublishingCommands(
+                    Register.DefaultRouting
+                        .PublishingCommands(
                             typeof(CreateApiKeyCommand),
                             typeof(DisableApiKeyCommand))
                         .To("api-key").With(defaultPipeline)
-                );
-            })
-            .As<ICqrsEngine>().SingleInstance();
+                    );
+                })
+                .As<ICqrsEngine>().SingleInstance();
         }
     }
 }
