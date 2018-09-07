@@ -1,14 +1,13 @@
 ﻿using System;
 using Lykke.Common.Chaos;
+using Lykke.Sdk.Settings;
 using Lykke.SettingsReader.Attributes;
 
 namespace Lykke.Service.HftInternalService.Core
 {
-    public class AppSettings
+    public class AppSettings : BaseAppSettings
     {
-        public MonitoringServiceClientSettings MonitoringServiceClient { get; set; }
         public HftInternalServiceSettings HftInternalService { get; set; }
-        public SlackNotificationsSettings SlackNotifications { get; set; }
         public HighFrequencyTradingSettings HighFrequencyTradingService { get; set; }
         public ClientAccountServiceClient ClientAccountServiceClient { get; set; }
     }
@@ -39,20 +38,9 @@ namespace Lykke.Service.HftInternalService.Core
         public string ConnectionString { get; set; }
     }
 
-    public class SlackNotificationsSettings
-    {
-        public AzureQueueSettings AzureQueue { get; set; }
-    }
-
-    public class AzureQueueSettings
-    {
-        public string ConnectionString { get; set; }
-
-        public string QueueName { get; set; }
-    }
-
     public class ClientAccountServiceClient
     {
+        [HttpCheck("api/isAlive")]
         public string ServiceUrl { get; set; }
     }
 }

@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using Common.Log;
 using JetBrains.Annotations;
 using Lykke.Common.Chaos;
+using Lykke.Common.Log;
 using Lykke.Cqrs;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Services.Events;
 
 namespace Lykke.Service.HftInternalService.Services.Handlers
 {
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class ApiKeyHandler
     {
         private readonly ILog _log;
@@ -16,18 +18,18 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
         private readonly IRepository<ApiKey> _apiKeyRepository;
 
         public ApiKeyHandler(
-            [NotNull] ILog log,
+            [NotNull] ILogFactory logFactory,
             [NotNull] IChaosKitty chaosKitty,
             [NotNull] IRepository<ApiKey> apiKeyRepository)
         {
-            _log = log.CreateComponentScope(nameof(ApiKeyHandler));
+            _log = logFactory.CreateLog(this);
             _chaosKitty = chaosKitty ?? throw new ArgumentNullException(nameof(chaosKitty));
             _apiKeyRepository = apiKeyRepository ?? throw new ArgumentNullException(nameof(apiKeyRepository));
         }
 
         public async Task<CommandHandlingResult> Handle(Commands.CreateApiKeyCommand command, IEventPublisher eventPublisher)
         {
-            _log.WriteInfo(nameof(Commands.CreateApiKeyCommand), command, "");
+            _log.Info("Create api key.", command);
 
             var existedApiKey = await _apiKeyRepository.Get(x => x.WalletId == command.WalletId && x.ValidTill == null);
             if (existedApiKey != null)
@@ -49,7 +51,7 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
         public async Task<CommandHandlingResult> Handle(Commands.DisableApiKeyCommand command, IEventPublisher eventPublisher)
         {
-            _log.WriteInfo(nameof(Commands.DisableApiKeyCommand), command, "");
+            _log.Info("Disable api key.", command);
 
             var existedApiKey = await _apiKeyRepository.Get(Guid.Parse(command.ApiKey));
             if (existedApiKey != null)

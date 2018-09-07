@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Lykke.Service.HftInternalService.Core.Domain
 {
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public interface IRepository<TEntity> where TEntity : class
     {
         Task Add(TEntity entity);

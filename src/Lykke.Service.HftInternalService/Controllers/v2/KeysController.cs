@@ -12,7 +12,12 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Lykke.Service.HftInternalService.Controllers.V2
 {
+    /// <summary>
+    /// Api keys controller - Version 2
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
     [Route("api/v2/[controller]")]
+    [ApiController]
     public class KeysController : Controller
     {
         private readonly IWalletService _walletService;
@@ -20,6 +25,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         private readonly IClientAccountService _clientAccountService;
         private readonly IMapper _mapper;
 
+        /// <inheritdoc />
         public KeysController(IWalletService walletService, IApiKeyService apiKeyService, IClientAccountService clientAccountService,
             [NotNull] IMapper mapper)
         {
