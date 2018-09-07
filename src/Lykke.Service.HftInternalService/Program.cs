@@ -14,7 +14,7 @@ namespace Lykke.Service.HftInternalService
 #if DEBUG
             return LykkeStarter.Start<Startup>(true, port);
 #else
-            return LykkeStarter.Start<Startup>(true, port);
+            return LykkeStarter.Start<Startup>(false, port);
 #endif
         }
     }
