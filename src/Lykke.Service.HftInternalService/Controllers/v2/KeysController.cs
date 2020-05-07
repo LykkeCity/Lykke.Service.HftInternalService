@@ -8,7 +8,7 @@ using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models.V2;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lykke.Service.HftInternalService.Controllers.V2
 {
