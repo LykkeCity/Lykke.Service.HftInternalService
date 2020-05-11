@@ -31,6 +31,8 @@ namespace Lykke.Service.HftInternalService.Modules
         private void RegisterApiKeyService(ContainerBuilder builder)
         {
             builder.RegisterType<ApiKeyService>()
+                .WithParameter("jwtSecret", _settings.CurrentValue.HftJwtAuth.JwtSecret)
+                .WithParameter("jwtAud", _settings.CurrentValue.HftJwtAuth.JwtAud)
                 .As<IApiKeyService>()
                 .SingleInstance();
 

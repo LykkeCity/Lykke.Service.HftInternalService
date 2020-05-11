@@ -10,6 +10,7 @@ namespace Lykke.Service.HftInternalService.Core
         public HftInternalServiceSettings HftInternalService { get; set; }
         public HighFrequencyTradingSettings HighFrequencyTradingService { get; set; }
         public ClientAccountServiceClient ClientAccountServiceClient { get; set; }
+        public HftJwtAuthSettings HftJwtAuth { get; set; }
     }
 
     public class HftInternalServiceSettings
@@ -42,5 +43,11 @@ namespace Lykke.Service.HftInternalService.Core
     {
         [HttpCheck("api/isAlive")]
         public string ServiceUrl { get; set; }
+    }
+
+    public class HftJwtAuthSettings
+    {
+        public string JwtSecret { get; set; }
+        public string JwtAud { get; set; }
     }
 }

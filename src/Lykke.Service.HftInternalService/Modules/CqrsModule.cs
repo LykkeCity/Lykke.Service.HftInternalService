@@ -56,13 +56,13 @@ namespace Lykke.Service.HftInternalService.Modules
 
             var rabbitMqSettings = new RabbitMQ.Client.ConnectionFactory {Uri = new Uri(_settings.SagasRabbitMqConnStr)};
 
-            builder.RegisterType<ApiKeyHandler>();
+            builder.RegisterType<ApiKeyHandler>()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             builder.Register(ctx =>
             {
                 var logFactory = ctx.Resolve<ILogFactory>();
                 var broker = rabbitMqSettings.Endpoint.ToString();
-
                 var messagingEngine = new MessagingEngine(logFactory,
                     new TransportResolver(new Dictionary<string, TransportInfo>
                     {
@@ -96,7 +96,9 @@ namespace Lykke.Service.HftInternalService.Modules
                         .FailedCommandRetryDelay(defaultRetryDelay)
                         .ListeningCommands(
                             typeof(CreateApiKeyCommand),
-                            typeof(DisableApiKeyCommand))
+                            typeof(DisableApiKeyCommand),
+                            typeof(SetTokensCommand)
+                            )
                         .On(defaultRoute)
                         .PublishingEvents(
                             typeof(ApiKeyUpdatedEvent))
@@ -106,7 +108,9 @@ namespace Lykke.Service.HftInternalService.Modules
                     Register.DefaultRouting
                         .PublishingCommands(
                             typeof(CreateApiKeyCommand),
-                            typeof(DisableApiKeyCommand))
+                            typeof(DisableApiKeyCommand),
+                            typeof(SetTokensCommand)
+                            )
                         .To("api-key").With(defaultPipeline)
                     );
 

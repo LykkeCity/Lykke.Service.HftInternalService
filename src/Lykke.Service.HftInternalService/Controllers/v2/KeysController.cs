@@ -147,5 +147,18 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
             await _walletService.DeleteWallet(apiKey);
             return Ok();
         }
+
+        /// <summary>
+        /// Set tokens
+        /// </summary>
+        /// <param name="key"></param>
+        [HttpPost("setTokens")]
+        [SwaggerOperation("SetTokens")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SetTokens()
+        {
+            await _apiKeyService.SetTokensAsync();
+            return Ok();
+        }
     }
 }
