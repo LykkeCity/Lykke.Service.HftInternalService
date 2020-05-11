@@ -1,33 +1,44 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Lykke.Cqrs;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Services.Commands;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Lykke.Service.HftInternalService.Services
 {
     public class ApiKeyService : IApiKeyService
     {
         private readonly ICqrsEngine _cqrsEngine;
+        private readonly string _jwtSecret;
+        private readonly string _jwtAud;
         private readonly IRepository<ApiKey> _apiKeyRepository;
 
-        public ApiKeyService([NotNull] IRepository<ApiKey> orderStateRepository,
-            [NotNull] ICqrsEngine cqrsEngine)
+        public ApiKeyService(
+            string jwtSecret,
+            string jwtAud,
+            IRepository<ApiKey> orderStateRepository,
+            ICqrsEngine cqrsEngine)
         {
+            _jwtSecret = jwtSecret;
+            _jwtAud = jwtAud;
             _apiKeyRepository = orderStateRepository ?? throw new ArgumentNullException(nameof(orderStateRepository));
             _cqrsEngine = cqrsEngine ?? throw new ArgumentNullException(nameof(cqrsEngine));
         }
 
-        public Task<ApiKey> GenerateApiKeyAsync(string clientId, string walletId)
+        public Task<ApiKey> GenerateApiKeyAsync(string clientId, string walletId, string walletName = null)
         {
-            var apiKey = Guid.NewGuid();
-            var key = new ApiKey { Id = apiKey, ClientId = clientId, WalletId = walletId };
+            var id = Guid.NewGuid();
+            var token = GenerateJwtToken(clientId, walletId, walletName);
+            var key = new ApiKey { Id = id, Token = token, ClientId = clientId, WalletId = walletId };
 
             _cqrsEngine.SendCommand(
-                new CreateApiKeyCommand { ApiKey = key.Id.ToString(), ClientId = clientId, WalletId = walletId },
+                new CreateApiKeyCommand { ApiKey = key.Id.ToString(), Token = token, ClientId = clientId, WalletId = walletId },
                 "api-key", "api-key");
 
             return Task.FromResult(key);
@@ -47,18 +58,53 @@ namespace Lykke.Service.HftInternalService.Services
             // todo: make async calls
             var existedApiKeys = _apiKeyRepository
                 .FilterBy(x => x.ClientId == clientId && x.ValidTill == null)
-                .ToArray(); 
+                .ToArray();
 
             return Task.FromResult(existedApiKeys);
         }
 
         public async Task<ApiKey> GetApiKeyAsync(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return null;
+
             if (Guid.TryParse(id, out var key))
             {
                 return await _apiKeyRepository.Get(key);
             }
-            return null;
+
+            return _apiKeyRepository.FilterBy(x => x.Token == id).FirstOrDefault();
+        }
+
+        public Task SetTokensAsync()
+        {
+            _cqrsEngine.SendCommand(new SetTokensCommand(),
+                "api-key", "api-key");
+
+            return Task.CompletedTask;
+        }
+
+        public string GenerateJwtToken(string clientId, string walletId, string walletName)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Name, walletName ?? "wallet"),
+                    new Claim(JwtRegisteredClaimNames.Aud, _jwtAud),
+                    new Claim("client-id", clientId),
+                    new Claim("wallet-id", walletId)
+                }),
+                Expires = DateTime.UtcNow.AddYears(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
         }
     }
 }

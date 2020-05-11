@@ -13,7 +13,7 @@ namespace Lykke.Service.HftInternalService.Modules
         public ApiKeyProfile()
         {
             CreateMap<ApiKey, ApiKeyDto>()
-                .ForMember(dto => dto.ApiKey, m => m.MapFrom(o => o.Id.ToString()))
+                .ForMember(dto => dto.ApiKey, m => m.MapFrom(o => string.IsNullOrEmpty(o.Token) ? o.Id.ToString() :o.Token))
                 .ForMember(dto => dto.WalletId, m => m.MapFrom(o => o.WalletId))
                 .ForMember(dto => dto.Enabled, m => m.MapFrom(o => !o.ValidTill.HasValue));
         }

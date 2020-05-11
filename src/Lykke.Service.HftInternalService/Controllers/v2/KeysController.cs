@@ -8,7 +8,7 @@ using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models.V2;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lykke.Service.HftInternalService.Controllers.V2
 {
@@ -145,6 +145,19 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
                 return NotFound();
 
             await _walletService.DeleteWallet(apiKey);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Set tokens
+        /// </summary>
+        /// <param name="key"></param>
+        [HttpPost("setTokens")]
+        [SwaggerOperation("SetTokens")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SetTokens()
+        {
+            await _apiKeyService.SetTokensAsync();
             return Ok();
         }
     }
