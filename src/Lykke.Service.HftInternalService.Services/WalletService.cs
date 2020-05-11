@@ -24,7 +24,7 @@ namespace Lykke.Service.HftInternalService.Services
                 type: WalletType.Trusted,
                 name: name,
                 description: description));
-            var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId, wallet.Id);
+            var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId, wallet.Id, name);
             return apiKey;
         }
 

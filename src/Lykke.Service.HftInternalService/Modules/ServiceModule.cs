@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using JetBrains.Annotations;
+using Lykke.Sdk;
 using Lykke.Service.HftInternalService.Core;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
@@ -31,6 +32,8 @@ namespace Lykke.Service.HftInternalService.Modules
         private void RegisterApiKeyService(ContainerBuilder builder)
         {
             builder.RegisterType<ApiKeyService>()
+                .WithParameter("jwtSecret", _settings.CurrentValue.HftJwtAuth.JwtSecret)
+                .WithParameter("jwtAud", _settings.CurrentValue.HftJwtAuth.JwtAud)
                 .As<IApiKeyService>()
                 .SingleInstance();
 
@@ -40,6 +43,10 @@ namespace Lykke.Service.HftInternalService.Modules
 
             builder.RegisterType<WalletService>()
                 .As<IWalletService>()
+                .SingleInstance();
+
+            builder.RegisterType<StartupManager>()
+                .As<IStartupManager>()
                 .SingleInstance();
         }
 

@@ -6,6 +6,7 @@ namespace Lykke.Service.HftInternalService.Services.Events
     public class ApiKeyUpdatedEvent
     {
         public string ApiKey { get; set; }
+        public string Token { get; set; }
         public string WalletId { get; set; }
         public bool Enabled { get; set; }
     }

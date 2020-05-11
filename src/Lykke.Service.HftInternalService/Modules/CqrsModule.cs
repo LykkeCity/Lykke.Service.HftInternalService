@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Autofac;
 using JetBrains.Annotations;
 using Lykke.Common.Chaos;
 using Lykke.Common.Log;
 using Lykke.Cqrs;
 using Lykke.Cqrs.Configuration;
+using Lykke.Cqrs.Middleware.Logging;
 using Lykke.Messaging;
 using Lykke.Messaging.RabbitMq;
 using Lykke.Messaging.Serialization;
@@ -52,18 +54,15 @@ namespace Lykke.Service.HftInternalService.Modules
                 .As<IDependencyResolver>()
                 .SingleInstance();
 
-            var rabbitMqSettings = new RabbitMQ.Client.ConnectionFactory {Uri = _settings.SagasRabbitMqConnStr};
+            var rabbitMqSettings = new RabbitMQ.Client.ConnectionFactory {Uri = new Uri(_settings.SagasRabbitMqConnStr)};
 
-            builder.RegisterType<ApiKeyHandler>();
+            builder.RegisterType<ApiKeyHandler>()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             builder.Register(ctx =>
             {
                 var logFactory = ctx.Resolve<ILogFactory>();
-#if DEBUG
-                var broker = rabbitMqSettings.Endpoint + "/debug";
-#else
                 var broker = rabbitMqSettings.Endpoint.ToString();
-#endif
                 var messagingEngine = new MessagingEngine(logFactory,
                     new TransportResolver(new Dictionary<string, TransportInfo>
                     {
@@ -80,7 +79,7 @@ namespace Lykke.Service.HftInternalService.Modules
                 const string defaultPipeline = "commands";
                 const string defaultRoute = "self";
 
-                return new CqrsEngine(logFactory,
+                var engine = new CqrsEngine(logFactory,
                     ctx.Resolve<IDependencyResolver>(),
                     messagingEngine,
                     new DefaultEndpointProvider(),
@@ -91,11 +90,15 @@ namespace Lykke.Service.HftInternalService.Modules
                         environment: "lykke",
                         exclusiveQueuePostfix: _settings.QueuePostfix)),
 
+                    Register.EventInterceptors(new DefaultEventLoggingInterceptor(ctx.Resolve<ILogFactory>())),
+
                     Register.BoundedContext("api-key")
                         .FailedCommandRetryDelay(defaultRetryDelay)
                         .ListeningCommands(
                             typeof(CreateApiKeyCommand),
-                            typeof(DisableApiKeyCommand))
+                            typeof(DisableApiKeyCommand),
+                            typeof(SetTokensCommand)
+                            )
                         .On(defaultRoute)
                         .PublishingEvents(
                             typeof(ApiKeyUpdatedEvent))
@@ -105,11 +108,18 @@ namespace Lykke.Service.HftInternalService.Modules
                     Register.DefaultRouting
                         .PublishingCommands(
                             typeof(CreateApiKeyCommand),
-                            typeof(DisableApiKeyCommand))
+                            typeof(DisableApiKeyCommand),
+                            typeof(SetTokensCommand)
+                            )
                         .To("api-key").With(defaultPipeline)
                     );
+
+                    engine.StartPublishers();
+                    return engine;
                 })
-                .As<ICqrsEngine>().SingleInstance();
+                .As<ICqrsEngine>()
+                .AutoActivate()
+                .SingleInstance();
         }
     }
 }

@@ -2,11 +2,12 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models.v1;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Lykke.Service.HftInternalService.Controllers.V1
 {
@@ -22,13 +23,15 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
         private readonly IWalletService _walletService;
         private readonly IApiKeyService _apiKeyService;
         private readonly IClientAccountService _clientAccountService;
+        private readonly IMapper _mapper;
 
         /// <inheritdoc />
-        public KeysController(IWalletService walletService, IApiKeyService apiKeyService, IClientAccountService clientAccountService)
+        public KeysController(IWalletService walletService, IApiKeyService apiKeyService, IClientAccountService clientAccountService, IMapper mapper)
         {
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
             _walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
             _clientAccountService = clientAccountService ?? throw new ArgumentNullException(nameof(clientAccountService));
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -54,7 +57,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
             }
 
             var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name, request.Description);
-            return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
+            return Ok(_mapper.Map<ApiKeyDto>(apiKey));
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
             }
 
             var apiKey = await _apiKeyService.GenerateApiKeyAsync(request.ClientId, request.WalletId);
-            return Ok(new ApiKeyDto { Key = apiKey.Id.ToString(), Wallet = apiKey.WalletId });
+            return Ok(_mapper.Map<ApiKeyDto>(apiKey));
         }
 
         /// <summary>
@@ -105,7 +108,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
                 return BadRequest();
 
             var keys = await _apiKeyService.GetApiKeysAsync(clientId);
-            return Ok(keys.Select(key => new ApiKeyDto { Key = key.Id.ToString(), Wallet = key.WalletId}));
+            return Ok(keys.Select(_mapper.Map<ApiKeyDto>));
         }
 
         /// <summary>
