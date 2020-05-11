@@ -45,14 +45,14 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
                 await _apiKeyRepository.Update(existedApiKey);
 
-                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = existedApiKey.Id.ToString(), Token = command.Token, WalletId = existedApiKey.WalletId, Enabled = false });
+                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = existedApiKey.Token ?? existedApiKey.Id.ToString(), Token = command.Token, WalletId = existedApiKey.WalletId, Enabled = false });
             }
 
             var key = new ApiKey { Id = Guid.Parse(command.ApiKey), Token = command.Token, ClientId = command.ClientId, WalletId = command.WalletId };
             await _apiKeyRepository.Add(key);
             _chaosKitty.Meow("repository unavailable");
 
-            eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = key.Id.ToString(), Token = command.Token, WalletId = key.WalletId, Enabled = true });
+            eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = key.Token ?? key.Id.ToString(), Token = command.Token, WalletId = key.WalletId, Enabled = true });
 
             return CommandHandlingResult.Ok();
         }
@@ -68,7 +68,7 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                 await _apiKeyRepository.Update(existedApiKey);
                 _chaosKitty.Meow("repository unavailable");
 
-                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = command.ApiKey, WalletId = existedApiKey.WalletId, Enabled = false });
+                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = existedApiKey.Token ?? command.ApiKey, WalletId = existedApiKey.WalletId, Enabled = false });
             }
 
             return CommandHandlingResult.Ok();
@@ -87,7 +87,7 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                 key.Token = ApiKeyService.GenerateJwtToken(key.ClientId, key.WalletId, null);
                 tasks.Add(_apiKeyRepository.Update(key));
                 eventPublisher.PublishEvent(new ApiKeyUpdatedEvent {
-                    ApiKey = key.Id.ToString(),
+                    ApiKey = key.Token ?? key.Id.ToString(),
                     Token = key.Token,
                     WalletId = key.WalletId,
                     Enabled = key.ValidTill == null || key.ValidTill > DateTime.UtcNow
