@@ -97,7 +97,7 @@ namespace Lykke.Service.HftInternalService.Services
                     new Claim("client-id", clientId),
                     new Claim("wallet-id", walletId)
                 }),
-                Expires = DateTime.UtcNow.AddYears(1),
+                Expires = DateTime.UtcNow.AddYears(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
