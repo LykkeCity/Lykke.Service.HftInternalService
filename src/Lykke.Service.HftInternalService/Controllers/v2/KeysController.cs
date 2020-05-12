@@ -73,7 +73,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> RegenerateKey()
         {
-            var allApiKeys = await _apiKeyService.GetAllApiKeysAsync();
+            var allApiKeys = await _apiKeyService.GetValidKeys();
 
             _log.Info($"{allApiKeys.Count} API keys found. Regenerating them all...");
 

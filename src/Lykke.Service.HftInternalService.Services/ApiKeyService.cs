@@ -98,19 +98,11 @@ namespace Lykke.Service.HftInternalService.Services
             return Task.CompletedTask;
         }
 
-        public async Task<IReadOnlyCollection<ApiKey>> GetAllApiKeysAsync()
+        public async Task<IReadOnlyCollection<ApiKey>> GetValidKeys()
         {
-            var result = new List<ApiKey>();
+            var now = DateTime.UtcNow;
 
-            using (var cursor = await _apiKeyRepository.All())
-            {
-                while (await cursor.MoveNextAsync())
-                {
-                    result.AddRange(cursor.Current);
-                }
-            }
-
-            return result;
+            return _apiKeyRepository.FilterBy(x => x.ValidTill == null && x.ValidTill > now).ToList();
         }
 
         public string GenerateJwtToken(string clientId, string walletId, string walletName)
