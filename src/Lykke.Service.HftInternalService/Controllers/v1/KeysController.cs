@@ -107,7 +107,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V1
             if (string.IsNullOrWhiteSpace(clientId))
                 return BadRequest();
 
-            var keys = await _apiKeyService.GetApiKeysAsync(clientId);
+            var keys = await _apiKeyService.GetApiKeysAsync(clientId, true);
             return Ok(keys.Select(_mapper.Map<ApiKeyDto>));
         }
 

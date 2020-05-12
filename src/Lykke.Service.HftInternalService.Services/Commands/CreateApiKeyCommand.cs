@@ -1,4 +1,5 @@
-﻿using MessagePack;
+﻿using System;
+using MessagePack;
 
 namespace Lykke.Service.HftInternalService.Services.Commands
 {
@@ -9,5 +10,6 @@ namespace Lykke.Service.HftInternalService.Services.Commands
         public string Token { get; set; }
         public string ClientId { get; set; }
         public string WalletId { get; set; }
+        public DateTime? Created { get; set; }
     }
 }
