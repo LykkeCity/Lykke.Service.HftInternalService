@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Lykke.Service.HftInternalService.Core.Domain;
 
 namespace Lykke.Service.HftInternalService.Core.Services
@@ -11,5 +13,6 @@ namespace Lykke.Service.HftInternalService.Core.Services
         Task<ApiKey> GetApiKeyAsync(string id);
         string GenerateJwtToken(string clientId, string walletId, string walletName);
         Task SetTokensAsync();
+        Task<IReadOnlyCollection<ApiKey>> GetValidKeys();
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Lykke.Cqrs;
-using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Services.Commands;
@@ -19,19 +19,16 @@ namespace Lykke.Service.HftInternalService.Services
         private readonly string _jwtSecret;
         private readonly string _jwtAud;
         private readonly IRepository<ApiKey> _apiKeyRepository;
-        private readonly IClientAccountService _clientAccountService;
 
         public ApiKeyService(
             string jwtSecret,
             string jwtAud,
             IRepository<ApiKey> orderStateRepository,
-            IClientAccountService clientAccountService,
             ICqrsEngine cqrsEngine)
         {
             _jwtSecret = jwtSecret;
             _jwtAud = jwtAud;
             _apiKeyRepository = orderStateRepository ?? throw new ArgumentNullException(nameof(orderStateRepository));
-            _clientAccountService = clientAccountService;
             _cqrsEngine = cqrsEngine ?? throw new ArgumentNullException(nameof(cqrsEngine));
         }
 
@@ -99,6 +96,13 @@ namespace Lykke.Service.HftInternalService.Services
                 "api-key", "api-key");
 
             return Task.CompletedTask;
+        }
+
+        public async Task<IReadOnlyCollection<ApiKey>> GetValidKeys()
+        {
+            var now = DateTime.UtcNow;
+
+            return _apiKeyRepository.FilterBy(x => x.ValidTill == null && x.ValidTill > now).ToList();
         }
 
         public string GenerateJwtToken(string clientId, string walletId, string walletName)

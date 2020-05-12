@@ -3,7 +3,9 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Common.Log;
 using JetBrains.Annotations;
+using Lykke.Common.Log;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models.V2;
@@ -24,11 +26,13 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         private readonly IApiKeyService _apiKeyService;
         private readonly IClientAccountService _clientAccountService;
         private readonly IMapper _mapper;
+        private readonly ILog _log;
 
         /// <inheritdoc />
         public KeysController(IWalletService walletService, IApiKeyService apiKeyService, IClientAccountService clientAccountService,
-            [NotNull] IMapper mapper)
+            [NotNull] IMapper mapper, ILogFactory logFactory)
         {
+            _log = logFactory.CreateLog(this);
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
             _walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
             _clientAccountService = clientAccountService ?? throw new ArgumentNullException(nameof(clientAccountService));
@@ -58,6 +62,27 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
 
             var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name, request.Description);
             return Ok(_mapper.Map<ApiKeyDto>(apiKey));
+        }
+
+        /// <summary>
+        /// Creates new api-key for all existing wallets.
+        /// </summary>
+        [HttpPost("newAll")]
+        [SwaggerOperation("RegenerateAllKeys")]
+        [ProducesResponseType(typeof(ApiKeyDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> RegenerateKey()
+        {
+            var allApiKeys = await _apiKeyService.GetValidKeys();
+
+            _log.Info($"{allApiKeys.Count} API keys found. Regenerating them all...");
+
+            foreach (var existingApiKey in allApiKeys)
+            {
+                await _apiKeyService.GenerateApiKeyAsync(existingApiKey.ClientId, existingApiKey.WalletId);    
+            }
+
+            return Ok($"{allApiKeys.Count} API keys were scheduled for regeneration.");
         }
 
         /// <summary>
@@ -151,7 +176,6 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         /// <summary>
         /// Set tokens
         /// </summary>
-        /// <param name="key"></param>
         [HttpPost("setTokens")]
         [SwaggerOperation("SetTokens")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]

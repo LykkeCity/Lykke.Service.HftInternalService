@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using MongoDB.Driver;
 
 namespace Lykke.Service.HftInternalService.Core.Domain
 {
@@ -22,7 +23,7 @@ namespace Lykke.Service.HftInternalService.Core.Domain
 
         Task Delete(IEnumerable<TEntity> entities);
 
-        IQueryable<TEntity> All();
+        Task<IAsyncCursor<TEntity>> All();
 
         Task<TEntity> Get(Expression<Func<TEntity, bool>> expression);
 
