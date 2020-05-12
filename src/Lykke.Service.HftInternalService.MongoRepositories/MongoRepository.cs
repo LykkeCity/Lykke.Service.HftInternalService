@@ -92,9 +92,9 @@ namespace Lykke.Service.HFTInternalService.MongoRepositories
             }).ConfigureAwait(false);
         }
 
-        public IQueryable<T> All()
+        public async Task<IAsyncCursor<T>> All()
         {
-            return GetCollection().AsQueryable();
+            return await GetCollection().FindAsync(FilterDefinition<T>.Empty);
         }
 
         public async Task<T> Get(Expression<Func<T, bool>> expression)
