@@ -102,7 +102,7 @@ namespace Lykke.Service.HftInternalService.Services
         {
             var now = DateTime.UtcNow;
 
-            return _apiKeyRepository.FilterBy(x => x.ValidTill == null && x.ValidTill > now).ToList();
+            return _apiKeyRepository.FilterBy(x => x.ValidTill == null || x.ValidTill > now).ToList();
         }
 
         public string GenerateJwtToken(string clientId, string walletId, string walletName)
