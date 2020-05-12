@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Lykke.Cqrs;
+using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.HftInternalService.Core.Domain;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Services.Commands;
@@ -18,16 +19,19 @@ namespace Lykke.Service.HftInternalService.Services
         private readonly string _jwtSecret;
         private readonly string _jwtAud;
         private readonly IRepository<ApiKey> _apiKeyRepository;
+        private readonly IClientAccountService _clientAccountService;
 
         public ApiKeyService(
             string jwtSecret,
             string jwtAud,
             IRepository<ApiKey> orderStateRepository,
+            IClientAccountService clientAccountService,
             ICqrsEngine cqrsEngine)
         {
             _jwtSecret = jwtSecret;
             _jwtAud = jwtAud;
             _apiKeyRepository = orderStateRepository ?? throw new ArgumentNullException(nameof(orderStateRepository));
+            _clientAccountService = clientAccountService;
             _cqrsEngine = cqrsEngine ?? throw new ArgumentNullException(nameof(cqrsEngine));
         }
 
@@ -35,10 +39,10 @@ namespace Lykke.Service.HftInternalService.Services
         {
             var id = Guid.NewGuid();
             var token = GenerateJwtToken(clientId, walletId, walletName);
-            var key = new ApiKey { Id = id, Token = token, ClientId = clientId, WalletId = walletId };
+            var key = new ApiKey { Id = id, Token = token, ClientId = clientId, WalletId = walletId, Created = DateTime.UtcNow};
 
             _cqrsEngine.SendCommand(
-                new CreateApiKeyCommand { ApiKey = key.Id.ToString(), Token = token, ClientId = clientId, WalletId = walletId },
+                new CreateApiKeyCommand { ApiKey = key.Id.ToString(), Token = token, ClientId = clientId, WalletId = walletId, Created = DateTime.UtcNow },
                 "api-key", "api-key");
 
             return Task.FromResult(key);
@@ -53,12 +57,25 @@ namespace Lykke.Service.HftInternalService.Services
             return Task.CompletedTask;
         }
 
-        public Task<ApiKey[]> GetApiKeysAsync(string clientId)
+        public Task<ApiKey[]> GetApiKeysAsync(string clientId, bool hideKeys)
         {
-            // todo: make async calls
             var existedApiKeys = _apiKeyRepository
                 .FilterBy(x => x.ClientId == clientId && x.ValidTill == null)
                 .ToArray();
+
+            if (hideKeys)
+            {
+                var now = DateTime.UtcNow;
+
+                foreach (var key in existedApiKeys)
+                {
+                    if (!key.Created.HasValue || now - key.Created.Value >= TimeSpan.FromMinutes(5))
+                    {
+                        key.Id = Guid.Empty;
+                        key.Token = null;
+                    }
+                }
+            }
 
             return Task.FromResult(existedApiKeys);
         }
