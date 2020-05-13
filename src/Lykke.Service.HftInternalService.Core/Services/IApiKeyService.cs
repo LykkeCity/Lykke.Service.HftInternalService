@@ -9,7 +9,7 @@ namespace Lykke.Service.HftInternalService.Core.Services
         Task DeleteApiKeyAsync(ApiKey key);
         Task<ApiKey[]> GetApiKeysAsync(string clientId, bool hideKeys);
         Task<ApiKey> GetApiKeyAsync(string id);
-        string GenerateJwtToken(string clientId, string walletId, string walletName);
+        string GenerateJwtToken(string apiKey, string clientId, string walletId, string walletName);
         Task SetTokensAsync();
     }
 }
