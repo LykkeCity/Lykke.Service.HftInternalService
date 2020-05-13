@@ -84,7 +84,7 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
             foreach (var key in noTokenKeys)
             {
-                key.Token = ApiKeyService.GenerateJwtToken(key.ClientId, key.WalletId, null);
+                key.Token = ApiKeyService.GenerateJwtToken(key.Id.ToString(), key.ClientId, key.WalletId, null);
                 tasks.Add(_apiKeyRepository.Update(key));
                 eventPublisher.PublishEvent(new ApiKeyUpdatedEvent {
                     ApiKey = key.Token ?? key.Id.ToString(),
