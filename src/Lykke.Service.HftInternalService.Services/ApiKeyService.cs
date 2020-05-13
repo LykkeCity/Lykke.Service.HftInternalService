@@ -69,7 +69,7 @@ namespace Lykke.Service.HftInternalService.Services
 
                 foreach (var key in existedApiKeys)
                 {
-                    if (!key.Created.HasValue || now - key.Created.Value >= TimeSpan.FromMinutes(5))
+                    if (!key.Created.HasValue || now - key.Created.Value >= TimeSpan.FromMinutes(1))
                     {
                         key.Id = Guid.Empty;
                         key.Token = null;
