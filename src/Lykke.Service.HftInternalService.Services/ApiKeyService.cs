@@ -35,7 +35,7 @@ namespace Lykke.Service.HftInternalService.Services
         public Task<ApiKey> GenerateApiKeyAsync(string clientId, string walletId, string walletName = null)
         {
             var id = Guid.NewGuid();
-            var token = GenerateJwtToken(clientId, walletId, walletName);
+            var token = GenerateJwtToken(id.ToString(), clientId, walletId, walletName);
             var key = new ApiKey { Id = id, Token = token, ClientId = clientId, WalletId = walletId, Created = DateTime.UtcNow};
 
             _cqrsEngine.SendCommand(
@@ -66,7 +66,7 @@ namespace Lykke.Service.HftInternalService.Services
 
                 foreach (var key in existedApiKeys)
                 {
-                    if (!key.Created.HasValue || now - key.Created.Value >= TimeSpan.FromMinutes(5))
+                    if (!key.Created.HasValue || now - key.Created.Value >= TimeSpan.FromMinutes(1))
                     {
                         key.Id = Guid.Empty;
                         key.Token = null;
@@ -105,7 +105,7 @@ namespace Lykke.Service.HftInternalService.Services
             return _apiKeyRepository.FilterBy(x => x.ValidTill == null || x.ValidTill > now).ToList();
         }
 
-        public string GenerateJwtToken(string clientId, string walletId, string walletName)
+        public string GenerateJwtToken(string keyId, string clientId, string walletId, string walletName)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
@@ -115,6 +115,7 @@ namespace Lykke.Service.HftInternalService.Services
                 {
                     new Claim(ClaimTypes.Name, walletName ?? "wallet"),
                     new Claim(JwtRegisteredClaimNames.Aud, _jwtAud),
+                    new Claim("key-id", keyId),
                     new Claim("client-id", clientId),
                     new Claim("wallet-id", walletId)
                 }),
