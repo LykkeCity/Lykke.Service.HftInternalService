@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
+using Lykke.Service.HftInternalService.Client.Api;
 
 namespace Lykke.Service.HftInternalService.Client.Keys
 {
