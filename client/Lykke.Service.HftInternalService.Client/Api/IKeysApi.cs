@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using Lykke.Service.HftInternalService.Client.Keys;
 using Refit;
 
-namespace Lykke.Service.HftInternalService.Client
+namespace Lykke.Service.HftInternalService.Client.Api
 {
     /// <summary>
     /// Service interface for the HFT internal service api-key functionality.
@@ -47,5 +47,11 @@ namespace Lykke.Service.HftInternalService.Client
         /// <param name="clientId">the client to query for api wallets</param>
         [Get("/api/v2/keys")]
         Task<IReadOnlyCollection<ApiKeyModel>> GetKeys([Required] string clientId);
+
+        /// <summary>
+        /// Gets all api key ids
+        /// </summary>
+        [Get("/api/v2/keys/ids")]
+        Task<IReadOnlyCollection<string>> GetAllKeyIds();
     }
 }

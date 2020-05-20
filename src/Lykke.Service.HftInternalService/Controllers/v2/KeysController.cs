@@ -79,7 +79,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
 
             foreach (var existingApiKey in allApiKeys)
             {
-                await _apiKeyService.GenerateApiKeyAsync(existingApiKey.ClientId, existingApiKey.WalletId);    
+                await _apiKeyService.GenerateApiKeyAsync(existingApiKey.ClientId, existingApiKey.WalletId);
             }
 
             return Ok($"{allApiKeys.Count} API keys were scheduled for regeneration.");
@@ -183,6 +183,18 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         {
             await _apiKeyService.SetTokensAsync();
             return Ok();
+        }
+
+        /// <summary>
+        /// Get all api key ids
+        /// </summary>
+        [HttpGet("ids")]
+        [SwaggerOperation("GetAllKeyIds")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAllKeyIds()
+        {
+            var ids = await _apiKeyService.GetValidKeys();
+            return Ok(ids.Select(x => x.Id.ToString()).ToList());
         }
     }
 }
