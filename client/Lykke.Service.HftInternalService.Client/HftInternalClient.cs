@@ -6,7 +6,7 @@ namespace Lykke.Service.HftInternalService.Client
     /// <summary>
     /// Hft internal API aggregating interface.
     /// </summary>
-    public class HftInternalClient
+    public class HftInternalClient : IHftInternalClient
     {
         public IKeysApi Keys { get; private set; }
 
