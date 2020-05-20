@@ -12,6 +12,9 @@
     <None Update="Dockerfile">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
+    <None Update="appsettings.dev.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\client\Lykke.Service.HftInternalService.Client\Lykke.Service.HftInternalService.Client.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.Core\Lykke.Service.HftInternalService.Core.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.MongoRepositories\Lykke.Service.HFTInternalService.MongoRepositories.csproj" />
     <ProjectReference Include="..\Lykke.Service.HftInternalService.Services\Lykke.Service.HftInternalService.Services.csproj" />
