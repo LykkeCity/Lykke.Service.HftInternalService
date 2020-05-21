@@ -21,6 +21,8 @@ namespace Lykke.Service.HftInternalService.Core
         public string SagasRabbitMqConnStr { get; set; }
         [Optional]
         public ChaosSettings ChaosKitty { get; set; }
+
+        public RabbitMqSettings Rabbit { get; set; }
     }
 
     public class HighFrequencyTradingSettings
@@ -49,5 +51,12 @@ namespace Lykke.Service.HftInternalService.Core
     {
         public string JwtSecret { get; set; }
         public string JwtAud { get; set; }
+    }
+
+    public class RabbitMqSettings
+    {
+        public string ConnectionString { get; set; }
+        public string Namespace { get; set; }
+        public string ExchangeName { get; set; }
     }
 }

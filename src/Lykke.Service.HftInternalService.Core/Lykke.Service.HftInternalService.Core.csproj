@@ -11,4 +11,8 @@
     <PackageReference Include="Lykke.Sdk" Version="5.17.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\client\Lykke.Service.HftInternalService.Client\Lykke.Service.HftInternalService.Client.csproj" />
+  </ItemGroup>
+
 </Project>
