@@ -16,5 +16,8 @@ namespace Lykke.Service.HftInternalService.Models.v1
 
         /// <summary>The api key description</summary>
         public string Description { get; set; }
+
+        /// <summary>Is the api key for api v2 only</summary>
+        public bool Apiv2Only { get; set; }
     }
 }

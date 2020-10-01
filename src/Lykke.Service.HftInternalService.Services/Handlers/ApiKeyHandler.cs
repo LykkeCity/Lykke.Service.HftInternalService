@@ -54,7 +54,16 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                 eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = existedApiKey.Token ?? existedApiKey.Id.ToString(), Token = command.Token, WalletId = existedApiKey.WalletId, Enabled = false });
             }
 
-            var key = new ApiKey { Id = Guid.Parse(command.ApiKey), Token = command.Token, ClientId = command.ClientId, WalletId = command.WalletId, Created = command.Created};
+            var key = new ApiKey
+            {
+                Id = Guid.Parse(command.ApiKey),
+                Token = command.Token,
+                ClientId = command.ClientId,
+                WalletId = command.WalletId,
+                Created = command.Created,
+                Apiv2Only = command.Apiv2Only
+            };
+
             await _apiKeyRepository.Add(key);
             _chaosKitty.Meow("repository unavailable");
 
@@ -93,7 +102,7 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
             foreach (var key in noTokenKeys)
             {
-                key.Token = ApiKeyService.GenerateJwtToken(key.Id.ToString(), key.ClientId, key.WalletId, null);
+                key.Token = ApiKeyService.GenerateJwtToken(key.Id.ToString(), key.ClientId, key.WalletId, key.Apiv2Only, null);
                 tasks.Add(_apiKeyRepository.Update(key));
                 eventPublisher.PublishEvent(new ApiKeyUpdatedEvent {
                     ApiKey = key.Token ?? key.Id.ToString(),

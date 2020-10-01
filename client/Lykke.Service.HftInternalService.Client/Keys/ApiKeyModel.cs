@@ -22,5 +22,10 @@ namespace Lykke.Service.HftInternalService.Client.Keys
         /// Indicating whether this api-key is enabled.
         /// </summary>
         public bool Enabled { get; set; }
+
+        /// <summary>
+        /// Is the api key for api v2 only
+        /// </summary>
+        public bool Apiv2Only { get; set; }
     }
 }
