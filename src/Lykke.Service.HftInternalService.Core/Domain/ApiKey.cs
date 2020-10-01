@@ -10,5 +10,6 @@ namespace Lykke.Service.HftInternalService.Core.Domain
         public string Token { get; set; }
         public DateTime? Created { get; set; }
         public DateTime? ValidTill { get; set; }
+        public bool Apiv2Only { get; set; }
     }
 }

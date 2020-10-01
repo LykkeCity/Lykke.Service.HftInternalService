@@ -25,5 +25,10 @@ namespace Lykke.Service.HftInternalService.Client.Keys
         /// The description for the api wallet.
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Is the api key for api v2 only
+        /// </summary>
+        public bool Apiv2Only { get; set; }
     }
 }

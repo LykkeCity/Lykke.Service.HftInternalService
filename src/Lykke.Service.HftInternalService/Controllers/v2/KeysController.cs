@@ -60,7 +60,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
                 return BadRequest(ModelState);
             }
 
-            var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name, request.Description);
+            var apiKey = await _walletService.CreateWallet(request.ClientId, request.Apiv2Only, request.Name, request.Description);
             return Ok(_mapper.Map<ApiKeyDto>(apiKey));
         }
 
@@ -113,7 +113,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
                 return BadRequest(ModelState);
             }
 
-            var apiKey = await _apiKeyService.GenerateApiKeyAsync(request.ClientId, request.WalletId);
+            var apiKey = await _apiKeyService.GenerateApiKeyAsync(request.ClientId, request.WalletId, request.Apiv2Only);
             return Ok(_mapper.Map<ApiKeyDto>(apiKey));
         }
 

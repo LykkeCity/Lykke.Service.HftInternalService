@@ -17,14 +17,14 @@ namespace Lykke.Service.HftInternalService.Services
             _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
         }
 
-        public async Task<ApiKey> CreateWallet(string clientId, string name = null, string description = null)
+        public async Task<ApiKey> CreateWallet(string clientId, bool apiv2Only = false, string name = null, string description = null)
         {
             var wallet = await _clientAccountService.CreateWalletAsync(new CreateWalletRequest(
                 clientId: clientId,
                 type: WalletType.Trusted,
                 name: name,
                 description: description));
-            var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId, wallet.Id, name);
+            var apiKey = await _apiKeyService.GenerateApiKeyAsync(clientId, wallet.Id, apiv2Only, name);
             return apiKey;
         }
 
