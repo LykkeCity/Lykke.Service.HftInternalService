@@ -49,9 +49,20 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
                 await _apiKeyRepository.Update(existedApiKey);
                 await _keysPublisher.PublishAsync(new KeyUpdatedEvent
-                    {Id = existedApiKey.Id.ToString(), IsDeleted = true});
+                {
+                    Id = existedApiKey.Id.ToString(),
+                    IsDeleted = true,
+                    Apiv2Only = existedApiKey.Apiv2Only
+                });
 
-                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = existedApiKey.Token ?? existedApiKey.Id.ToString(), Token = command.Token, WalletId = existedApiKey.WalletId, Enabled = false });
+                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent
+                {
+                    ApiKey = existedApiKey.Token ?? existedApiKey.Id.ToString(),
+                    Token = command.Token,
+                    WalletId = existedApiKey.WalletId,
+                    Enabled = false,
+                    Apiv2Only = existedApiKey.Apiv2Only
+                });
             }
 
             var key = new ApiKey
@@ -67,9 +78,22 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
             await _apiKeyRepository.Add(key);
             _chaosKitty.Meow("repository unavailable");
 
-            eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = key.Token ?? key.Id.ToString(), Token = command.Token, WalletId = key.WalletId, Enabled = true });
+            eventPublisher.PublishEvent(new ApiKeyUpdatedEvent
+            {
+                ApiKey = key.Token ?? key.Id.ToString(),
+                Token = command.Token,
+                WalletId = key.WalletId,
+                Enabled = true,
+                Apiv2Only = key.Apiv2Only
+            });
+
             await _keysPublisher.PublishAsync(new KeyUpdatedEvent
-                {Id = key.Id.ToString(), IsDeleted = false});
+            {
+                Id = key.Id.ToString(),
+                IsDeleted = false,
+                Apiv2Only = key.Apiv2Only
+            });
+
             return CommandHandlingResult.Ok();
         }
 
@@ -84,9 +108,20 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                 await _apiKeyRepository.Update(existedApiKey);
                 _chaosKitty.Meow("repository unavailable");
 
-                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent { ApiKey = existedApiKey.Token ?? command.ApiKey, WalletId = existedApiKey.WalletId, Enabled = false });
+                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent
+                {
+                    ApiKey = existedApiKey.Token ?? command.ApiKey,
+                    WalletId = existedApiKey.WalletId,
+                    Enabled = false,
+                    Apiv2Only = existedApiKey.Apiv2Only
+                });
+
                 await _keysPublisher.PublishAsync(new KeyUpdatedEvent
-                    {Id = existedApiKey.Id.ToString(), IsDeleted = true});
+                {
+                    Id = existedApiKey.Id.ToString(),
+                    IsDeleted = true,
+                    Apiv2Only = existedApiKey.Apiv2Only
+                });
             }
 
             return CommandHandlingResult.Ok();
@@ -104,11 +139,13 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
             {
                 key.Token = ApiKeyService.GenerateJwtToken(key.Id.ToString(), key.ClientId, key.WalletId, key.Apiv2Only, null);
                 tasks.Add(_apiKeyRepository.Update(key));
-                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent {
+                eventPublisher.PublishEvent(new ApiKeyUpdatedEvent
+                {
                     ApiKey = key.Token ?? key.Id.ToString(),
                     Token = key.Token,
                     WalletId = key.WalletId,
-                    Enabled = key.ValidTill == null || key.ValidTill > DateTime.UtcNow
+                    Enabled = key.ValidTill == null || key.ValidTill > DateTime.UtcNow,
+                    Apiv2Only = key.Apiv2Only
                 });
             }
 
