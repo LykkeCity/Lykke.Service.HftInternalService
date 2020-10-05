@@ -14,5 +14,8 @@ namespace Lykke.Service.HftInternalService.Models.V2
         /// <summary>The wallet id</summary>
         [Required]
         public string WalletId { get; set; }
+
+        /// <summary>Is the api key for api v2 only</summary>
+        public bool Apiv2Only { get; set; }
     }
 }

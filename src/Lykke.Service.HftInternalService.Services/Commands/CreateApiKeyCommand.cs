@@ -11,5 +11,6 @@ namespace Lykke.Service.HftInternalService.Services.Commands
         public string ClientId { get; set; }
         public string WalletId { get; set; }
         public DateTime? Created { get; set; }
+        public bool Apiv2Only { get; set; }
     }
 }

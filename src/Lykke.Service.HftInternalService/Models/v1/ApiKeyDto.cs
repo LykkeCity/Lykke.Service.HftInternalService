@@ -10,5 +10,8 @@
 
         /// <summary>The wallet id</summary>
         public string Wallet { get; set; }
+
+        /// <summary>Is the api key for api v2 only</summary>
+        public bool Apiv2Only { get; set; }
     }
 }

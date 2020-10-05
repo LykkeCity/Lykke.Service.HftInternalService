@@ -7,6 +7,7 @@ using Common.Log;
 using JetBrains.Annotations;
 using Lykke.Common.Log;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
+using Lykke.Service.HftInternalService.Client.Keys;
 using Lykke.Service.HftInternalService.Core.Services;
 using Lykke.Service.HftInternalService.Models.V2;
 using Microsoft.AspNetCore.Mvc;
@@ -60,7 +61,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
                 return BadRequest(ModelState);
             }
 
-            var apiKey = await _walletService.CreateWallet(request.ClientId, request.Name, request.Description);
+            var apiKey = await _walletService.CreateWallet(request.ClientId, request.Apiv2Only, request.Name, request.Description);
             return Ok(_mapper.Map<ApiKeyDto>(apiKey));
         }
 
@@ -113,7 +114,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
                 return BadRequest(ModelState);
             }
 
-            var apiKey = await _apiKeyService.GenerateApiKeyAsync(request.ClientId, request.WalletId);
+            var apiKey = await _apiKeyService.GenerateApiKeyAsync(request.ClientId, request.WalletId, request.Apiv2Only);
             return Ok(_mapper.Map<ApiKeyDto>(apiKey));
         }
 
@@ -191,9 +192,20 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         [HttpGet("ids")]
         [SwaggerOperation("GetAllKeyIds")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllKeyIds()
+        public async Task<IActionResult> GetAllKeyIds([FromQuery]ApiType type = ApiType.All)
         {
             var ids = await _apiKeyService.GetValidKeys();
+
+            switch (type)
+            {
+                case ApiType.Apiv1:
+                    ids = ids.Where(x => !x.Apiv2Only).ToList();
+                    break;
+                case ApiType.Apiv2:
+                    ids = ids.Where(x => x.Apiv2Only).ToList();
+                    break;
+            }
+
             return Ok(ids.Select(x => x.Id.ToString()).ToList());
         }
     }

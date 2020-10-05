@@ -32,14 +32,30 @@ namespace Lykke.Service.HftInternalService.Services
             _cqrsEngine = cqrsEngine ?? throw new ArgumentNullException(nameof(cqrsEngine));
         }
 
-        public Task<ApiKey> GenerateApiKeyAsync(string clientId, string walletId, string walletName = null)
+        public Task<ApiKey> GenerateApiKeyAsync(string clientId, string walletId, bool apiv2Only = false, string walletName = null)
         {
             var id = Guid.NewGuid();
-            var token = GenerateJwtToken(id.ToString(), clientId, walletId, walletName);
-            var key = new ApiKey { Id = id, Token = token, ClientId = clientId, WalletId = walletId, Created = DateTime.UtcNow};
+            var token = GenerateJwtToken(id.ToString(), clientId, walletId, apiv2Only, walletName);
+            var key = new ApiKey
+            {
+                Id = id,
+                Token = token,
+                ClientId = clientId,
+                WalletId = walletId,
+                Created = DateTime.UtcNow,
+                Apiv2Only = apiv2Only
+            };
 
             _cqrsEngine.SendCommand(
-                new CreateApiKeyCommand { ApiKey = key.Id.ToString(), Token = token, ClientId = clientId, WalletId = walletId, Created = DateTime.UtcNow },
+                new CreateApiKeyCommand
+                {
+                    ApiKey = key.Id.ToString(),
+                    Token = token,
+                    ClientId = clientId,
+                    WalletId = walletId,
+                    Created = DateTime.UtcNow,
+                    Apiv2Only = apiv2Only
+                },
                 "api-key", "api-key");
 
             return Task.FromResult(key);
@@ -105,7 +121,7 @@ namespace Lykke.Service.HftInternalService.Services
             return _apiKeyRepository.FilterBy(x => x.ValidTill == null || x.ValidTill > now).ToList();
         }
 
-        public string GenerateJwtToken(string keyId, string clientId, string walletId, string walletName)
+        public string GenerateJwtToken(string keyId, string clientId, string walletId, bool apiv2Only, string walletName)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
@@ -117,7 +133,8 @@ namespace Lykke.Service.HftInternalService.Services
                     new Claim(JwtRegisteredClaimNames.Aud, _jwtAud),
                     new Claim("key-id", keyId),
                     new Claim("client-id", clientId),
-                    new Claim("wallet-id", walletId)
+                    new Claim("wallet-id", walletId),
+                    new Claim("apiv2Only", walletId)
                 }),
                 Expires = DateTime.UtcNow.AddYears(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
