@@ -61,7 +61,8 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                     Token = command.Token,
                     WalletId = existedApiKey.WalletId,
                     Enabled = false,
-                    Apiv2Only = existedApiKey.Apiv2Only
+                    Apiv2Only = existedApiKey.Apiv2Only,
+                    ClientId = existedApiKey.ClientId
                 });
             }
 
@@ -84,7 +85,8 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                 Token = command.Token,
                 WalletId = key.WalletId,
                 Enabled = true,
-                Apiv2Only = key.Apiv2Only
+                Apiv2Only = key.Apiv2Only,
+                ClientId = key.ClientId
             });
 
             await _keysPublisher.PublishAsync(new KeyUpdatedEvent
@@ -113,7 +115,8 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                     ApiKey = existedApiKey.Token ?? command.ApiKey,
                     WalletId = existedApiKey.WalletId,
                     Enabled = false,
-                    Apiv2Only = existedApiKey.Apiv2Only
+                    Apiv2Only = existedApiKey.Apiv2Only,
+                    ClientId = existedApiKey.ClientId
                 });
 
                 await _keysPublisher.PublishAsync(new KeyUpdatedEvent
@@ -145,7 +148,8 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                     Token = key.Token,
                     WalletId = key.WalletId,
                     Enabled = key.ValidTill == null || key.ValidTill > DateTime.UtcNow,
-                    Apiv2Only = key.Apiv2Only
+                    Apiv2Only = key.Apiv2Only,
+                    ClientId = key.ClientId
                 });
             }
 

@@ -10,5 +10,6 @@ namespace Lykke.Service.HftInternalService.Services.Events
         public string WalletId { get; set; }
         public bool Enabled { get; set; }
         public bool Apiv2Only { get; set; }
+        public string ClientId { get; set; }
     }
 }
