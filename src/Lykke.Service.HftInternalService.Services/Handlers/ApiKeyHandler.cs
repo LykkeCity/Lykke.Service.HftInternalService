@@ -50,9 +50,11 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                 await _apiKeyRepository.Update(existedApiKey);
                 await _keysPublisher.PublishAsync(new KeyUpdatedEvent
                 {
-                    Id = existedApiKey.Id.ToString(),
+                    Id =  existedApiKey.Token ?? existedApiKey.Id.ToString(),
                     IsDeleted = true,
-                    Apiv2Only = existedApiKey.Apiv2Only
+                    Apiv2Only = existedApiKey.Apiv2Only,
+                    ClientId = existedApiKey.ClientId,
+                    WalletId = existedApiKey.WalletId
                 });
 
                 eventPublisher.PublishEvent(new ApiKeyUpdatedEvent
@@ -91,9 +93,11 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
             await _keysPublisher.PublishAsync(new KeyUpdatedEvent
             {
-                Id = key.Id.ToString(),
+                Id = key.Token ?? key.Id.ToString(),
                 IsDeleted = false,
-                Apiv2Only = key.Apiv2Only
+                Apiv2Only = key.Apiv2Only,
+                ClientId = key.ClientId,
+                WalletId = key.WalletId
             });
 
             return CommandHandlingResult.Ok();
@@ -121,9 +125,11 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
                 await _keysPublisher.PublishAsync(new KeyUpdatedEvent
                 {
-                    Id = existedApiKey.Id.ToString(),
+                    Id = existedApiKey.Token ?? existedApiKey.Id.ToString(),
                     IsDeleted = true,
-                    Apiv2Only = existedApiKey.Apiv2Only
+                    Apiv2Only = existedApiKey.Apiv2Only,
+                    ClientId = existedApiKey.ClientId,
+                    WalletId = existedApiKey.WalletId
                 });
             }
 

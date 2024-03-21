@@ -51,6 +51,12 @@ namespace Lykke.Service.HftInternalService.Client.Api
         /// <summary>
         /// Gets all api key ids
         /// </summary>
+        [Get("/api/v2/keys/all")]
+        Task<IReadOnlyCollection<ApiKeyModel>> GetAllKeys(ApiType type = ApiType.All);
+
+        /// <summary>
+        /// Gets all api key ids
+        /// </summary>
         [Get("/api/v2/keys/ids")]
         Task<IReadOnlyCollection<string>> GetAllKeyIds(ApiType type = ApiType.All);
     }

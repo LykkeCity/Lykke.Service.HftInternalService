@@ -136,6 +136,30 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         }
 
         /// <summary>
+        /// Get all api keys.
+        /// </summary>
+        [HttpGet("all")]
+        [SwaggerOperation("GetAllKeys")]
+        [ProducesResponseType(typeof(ApiKeyDto[]), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetAllKeys([FromQuery] ApiType type = ApiType.All)
+        {
+            var keys = await _apiKeyService.GetValidKeys();
+
+            switch (type)
+            {
+                case ApiType.Apiv1:
+                    keys = keys.Where(x => !x.Apiv2Only).ToList();
+                    break;
+                case ApiType.Apiv2:
+                    keys = keys.Where(x => x.Apiv2Only).ToList();
+                    break;
+            }
+
+            return Ok(keys.Select(_mapper.Map<ApiKeyDto>));
+        }
+
+        /// <summary>
         /// Get api key.
         /// </summary>
         /// <param name="apiKey"></param>
