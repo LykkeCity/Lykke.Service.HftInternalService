@@ -19,6 +19,11 @@ namespace Lykke.Service.HftInternalService.Client.Keys
         public string WalletId { get; set; }
 
         /// <summary>
+        /// The client identifier.
+        /// </summary>
+        public string ClientId { get; set; }
+
+        /// <summary>
         /// Indicating whether this api-key is enabled.
         /// </summary>
         public bool Enabled { get; set; }

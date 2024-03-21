@@ -11,6 +11,9 @@
         /// <summary>The wallet id</summary>
         public string WalletId { get; set; }
 
+        /// <summary>The client id</summary>
+        public string ClientId { get; set; }
+
         /// <summary>Is the api key enabled</summary>
         public bool Enabled { get; set; }
 
