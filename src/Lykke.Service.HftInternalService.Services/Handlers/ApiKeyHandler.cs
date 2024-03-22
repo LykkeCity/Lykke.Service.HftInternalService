@@ -50,7 +50,7 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
                 await _apiKeyRepository.Update(existedApiKey);
                 await _keysPublisher.PublishAsync(new KeyUpdatedEvent
                 {
-                    Id =  existedApiKey.Token ?? existedApiKey.Id.ToString(),
+                    Id =  existedApiKey.Id.ToString(),
                     IsDeleted = true,
                     Apiv2Only = existedApiKey.Apiv2Only,
                     ClientId = existedApiKey.ClientId,
@@ -93,7 +93,7 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
             await _keysPublisher.PublishAsync(new KeyUpdatedEvent
             {
-                Id = key.Token ?? key.Id.ToString(),
+                Id = key.Id.ToString(),
                 IsDeleted = false,
                 Apiv2Only = key.Apiv2Only,
                 ClientId = key.ClientId,
@@ -125,7 +125,7 @@ namespace Lykke.Service.HftInternalService.Services.Handlers
 
                 await _keysPublisher.PublishAsync(new KeyUpdatedEvent
                 {
-                    Id = existedApiKey.Token ?? existedApiKey.Id.ToString(),
+                    Id = existedApiKey.Id.ToString(),
                     IsDeleted = true,
                     Apiv2Only = existedApiKey.Apiv2Only,
                     ClientId = existedApiKey.ClientId,
