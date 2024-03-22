@@ -5,6 +5,9 @@
     /// </summary>
     public class ApiKeyDto
     {
+        /// <summary>ID of the key</summary>
+        public string Id { get; set; }
+
         /// <summary>The API key</summary>
         public string ApiKey { get; set; }
 

@@ -8,6 +8,9 @@ namespace Lykke.Service.HftInternalService.Client.Keys
     [PublicAPI]
     public class ApiKeyModel
     {
+        /// <summary>ID of the key</summary>
+        public string Id { get; set; }
+
         /// <summary>
         /// The API key of the wallet.
         /// </summary>
