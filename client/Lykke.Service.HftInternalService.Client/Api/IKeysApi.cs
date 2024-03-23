@@ -52,7 +52,7 @@ namespace Lykke.Service.HftInternalService.Client.Api
         /// Get all api keys for a specified client without hiding key ID and token
         /// </summary>
         /// <param name="clientId">the client to query for api wallets</param>
-        [Get("/api/v2/keys-sensitive")]
+        [Get("/api/v2/keys/client-sensitive")]
         Task<IReadOnlyCollection<ApiKeyModel>> GetKeysSensitive([Required] string clientId);
 
         /// <summary>

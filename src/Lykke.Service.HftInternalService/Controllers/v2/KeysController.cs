@@ -139,7 +139,7 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         /// Get all api keys for a specified client without hiding key ID and token
         /// </summary>
         /// <param name="clientId"></param>
-        [HttpGet("keys-sensitive")]
+        [HttpGet("client-sensitive")]
         [SwaggerOperation("GetKeysSensitive")]
         [ProducesResponseType(typeof(ApiKeyDto[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
