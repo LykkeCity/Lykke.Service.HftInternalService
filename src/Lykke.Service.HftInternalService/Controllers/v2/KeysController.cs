@@ -136,6 +136,23 @@ namespace Lykke.Service.HftInternalService.Controllers.V2
         }
 
         /// <summary>
+        /// Get all api keys for a specified client without hiding key ID and token
+        /// </summary>
+        /// <param name="clientId"></param>
+        [HttpGet("keys-sensitive")]
+        [SwaggerOperation("GetKeysSensitive")]
+        [ProducesResponseType(typeof(ApiKeyDto[]), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetKeysSensitive(string clientId)
+        {
+            if (string.IsNullOrWhiteSpace(clientId))
+                return BadRequest();
+
+            var keys = await _apiKeyService.GetApiKeysAsync(clientId, false);
+            return Ok(keys.Select(_mapper.Map<ApiKeyDto>));
+        }
+
+        /// <summary>
         /// Get all api keys.
         /// </summary>
         [HttpGet("all")]
